@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { saveAs } from "file-saver";
+import { Editor } from "react-live";
 import { selectUser } from "../../auth/authSlice";
 import {
   createCollaboration,
-  getAllCollaborationsByTeamAndSubteam,
   getCollaborationById,
   updateCollaborationById,
-  deleteCollaborationById,
 } from "../collaboration.slice";
-import { Editor } from "react-live";
+import socket from "../../socket"; // Import socket for real-time synchronization
 
 const CollaborationEditor = () => {
   const { teamId, subteamId, collaborationId } = useParams();
@@ -26,17 +24,25 @@ const CollaborationEditor = () => {
         .unwrap()
         .then((data) => {
           setContent(data.content);
+          // Join the collaboration room using Socket.io
+          socket.emit("joinRoom", { roomId: data._id });
         })
         .catch((error) => {
           console.log("Failed to fetch collaboration:", error);
         });
     }
+    // Cleanup Socket.io listeners on unmount
+    return () => {
+      // Leave the collaboration room when the component unmounts
+      if (collaborationId) {
+        socket.emit("leaveRoom", { roomId: collaborationId });
+      }
+    };
   }, [collaborationId, dispatch]);
 
   const handleCodeChange = (newCode) => {
     setContent(newCode);
     // Emit the code update to the server for real-time synchronization
-    // Assuming you have socket.io client setup in your app
     socket.emit("codeUpdate", { roomId: collaborationId, code: newCode });
   };
 
@@ -71,16 +77,6 @@ const CollaborationEditor = () => {
     }
   };
 
-  const handleDownloadCode = () => {
-    // Download the collaboration code as a file
-    if (collaboration) {
-      const blob = new Blob([collaboration.content], {
-        type: "text/plain;charset=utf-8",
-      });
-      saveAs(blob, "collaboration_code.txt");
-    }
-  };
-
   return (
     <div>
       <h2>Collaboration Editor</h2>
@@ -93,7 +89,6 @@ const CollaborationEditor = () => {
       <button onClick={handleSaveProgress}>
         {collaborationId ? "Save Progress" : "Create Collaboration"}
       </button>
-      <button onClick={handleDownloadCode}>Download Code</button>
     </div>
   );
 };

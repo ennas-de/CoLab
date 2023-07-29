@@ -7,10 +7,12 @@ import {
   createCollaboration,
   getAllCollaborationsByTeamAndSubteam,
 } from "../collaboration.slice";
+import { useSocket } from "../../contexts/SocketContext"; // Import the useSocket hook
 
-const CollaborationList = ({ teamId, subteamId }) => {
+const CollaborationList = ({ teamId, subteamId, socketServerUrl }) => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const [collaborations, setCollaborations] = useState([]);
   const [newCollaborationName, setNewCollaborationName] = useState("");
 
@@ -44,6 +46,8 @@ const CollaborationList = ({ teamId, subteamId }) => {
         setCollaborations((prevCollaborations) => [...prevCollaborations, data]);
         // Clear the input field
         setNewCollaborationName("");
+        // Emit the new collaboration details to all clients using Socket.io
+        socket.emit("newRoom", { roomId: data._id, name: data.name });
       })
       .catch((error) => {
         console.log("Failed to create collaboration:", error);

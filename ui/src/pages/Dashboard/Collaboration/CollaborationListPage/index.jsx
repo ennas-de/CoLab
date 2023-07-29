@@ -1,4 +1,4 @@
-// frontend/src/features/collaboration/components/CollaborationList.js
+// frontend/src/pages/Dashboard/Collaboration/CollaborationEditorPage.js
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
   joinCollaborationRoom,
   leaveCollaborationRoom,
 } from "../collaboration.slice";
+import socket from "../../socket"; // Import socket for real-time synchronization
 
 const CollaborationList = ({ teamId, subteamId }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,21 @@ const CollaborationList = ({ teamId, subteamId }) => {
         console.log("Failed to fetch collaborations:", error);
       });
   }, [teamId, subteamId, dispatch]);
+
+  useEffect(() => {
+    // Join the collaboration room for each collaboration in the list using Socket.io
+    collaborations.forEach((collaboration) => {
+      socket.emit("joinRoom", { roomId: collaboration._id });
+    });
+
+    // Cleanup Socket.io listeners on unmount
+    return () => {
+      // Leave the collaboration room for each collaboration when the component unmounts
+      collaborations.forEach((collaboration) => {
+        socket.emit("leaveRoom", { roomId: collaboration._id });
+      });
+    };
+  }, [collaborations]);
 
   const handleCreateCollaboration = () => {
     // Create a new collaboration room
@@ -58,7 +74,6 @@ const CollaborationList = ({ teamId, subteamId }) => {
       .unwrap()
       .then(() => {
         console.log("Joined collaboration room successfully.");
-        // You can implement a redirect here if needed
       })
       .catch((error) => {
         console.log("Failed to join collaboration room:", error);
@@ -71,7 +86,6 @@ const CollaborationList = ({ teamId, subteamId }) => {
       .unwrap()
       .then(() => {
         console.log("Left collaboration room successfully.");
-        // You can implement a redirect here if needed
       })
       .catch((error) => {
         console.log("Failed to leave collaboration room:", error);
@@ -112,4 +126,4 @@ const CollaborationList = ({ teamId, subteamId }) => {
   );
 };
 
-export default CollaborationList;
+export default CollaborationEditorPage;

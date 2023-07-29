@@ -1,7 +1,7 @@
-// frontend/src/features/collaboration/pages/CollaborationEditorPage.js
+// frontend/src/pages/Dashboard/Collaboration/CollaborationEditorPage.js
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Editor } from "react-live";
 import { saveAs } from "file-saver";
 import {
@@ -11,11 +11,13 @@ import {
   deleteCollaborationById,
 } from "../collaboration.slice";
 import { selectUser } from "../../auth/authSlice";
+import socket from "../../socket"; // Import socket for real-time synchronization
 
 const CollaborationEditorPage = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const history = useHistory();
   const [content, setContent] = useState("");
   const [collaboration, setCollaboration] = useState(null);
 
@@ -34,10 +36,24 @@ const CollaborationEditorPage = () => {
     }
   }, [collaborationId, dispatch]);
 
+  useEffect(() => {
+    // Join the collaboration room using Socket.io
+    if (collaboration) {
+      socket.emit("joinRoom", { roomId: collaboration._id });
+    }
+
+    // Cleanup Socket.io listeners on unmount
+    return () => {
+      // Leave the collaboration room when the component unmounts
+      if (collaboration) {
+        socket.emit("leaveRoom", { roomId: collaboration._id });
+      }
+    };
+  }, [collaboration]);
+
   const handleCodeChange = (newCode) => {
     setContent(newCode);
     // Emit the code update to the server for real-time synchronization
-    // Assuming you have socket.io client setup in your app
     socket.emit("codeUpdate", { roomId: collaborationId, code: newCode });
   };
 
@@ -110,11 +126,4 @@ const CollaborationEditorPage = () => {
         {collaborationId ? "Save Progress" : "Create Collaboration"}
       </button>
       {collaborationId && (
-        <button onClick={handleDeleteCollaboration}>Delete Collaboration</button>
-      )}
-      <button onClick={handleDownloadCode}>Download Code</button>
-    </div>
-  );
-};
-
-export default CollaborationEditorPage;
+        <button onClick={handleDeleteCollaboration}>Delete Collaboration

@@ -9,12 +9,13 @@ import {
   updateCollaborationById,
 } from "../collaboration.slice";
 import CodeEditor from "./CodeEditor";
-import socket from "../../socket"; // Assuming you have set up the socket connection
+import { useSocket } from "../../contexts/SocketContext"; // Import the useSocket hook
 
 const CollaborationDetail = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const { teamId, subteamId, collaborationId } = useParams();
+  const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const [collaboration, setCollaboration] = useState(null);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const CollaborationDetail = () => {
         socket.emit("leaveRoom", { roomId: collaboration._id });
       }
     };
-  }, [dispatch, collaborationId]);
+  }, [dispatch, collaborationId, socket]);
 
   const handleCodeUpdate = (newCode) => {
     // Update the code in the collaboration and save it to the backend

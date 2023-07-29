@@ -1,4 +1,4 @@
-// frontend/src/features/collaboration/pages/CollaborationDetailPage.js
+// frontend/src/pages/Dashboard/Collaboration/CollaborationDetailPage.js
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -17,6 +17,7 @@ import {
 } from "../collaboration.slice";
 import CodeEditor from "../components/CodeEditor";
 import API from "../../api";
+import socket from "../../socket"; // Import socket for real-time synchronization
 
 const CollaborationDetailPage = () => {
   const dispatch = useDispatch();
@@ -32,10 +33,21 @@ const CollaborationDetailPage = () => {
       .unwrap()
       .then((data) => {
         setCollaboration(data);
+
+        // Join the collaboration room using Socket.io
+        socket.emit("joinRoom", { roomId: data._id });
       })
       .catch((error) => {
         console.log("Failed to fetch collaboration:", error);
       });
+
+    // Cleanup Socket.io listeners on unmount
+    return () => {
+      // Leave the collaboration room when the component unmounts
+      if (collaborationId) {
+        socket.emit("leaveRoom", { roomId: collaborationId });
+      }
+    };
   }, [dispatch, collaborationId]);
 
   const handleCodeUpdate = (newCode) => {
@@ -54,6 +66,9 @@ const CollaborationDetailPage = () => {
         .catch((error) => {
           console.log("Failed to update collaboration:", error);
         });
+
+      // Emit the code update to the server for real-time synchronization
+      socket.emit("codeUpdate", { roomId: collaboration._id, code: newCode });
     }
   };
 
