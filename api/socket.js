@@ -21,6 +21,11 @@ const initializeSocket = (server) => {
       socket.join(roomId);
     });
 
+        // Listen for user leaving a room (optional)
+    socket.on("leaveRoom", ({ roomId }) => {
+      socket.leave(roomId);
+    });
+    
     // Socket.io disconnection event
     socket.on("disconnect", () => {
       console.log("A user disconnected!");
