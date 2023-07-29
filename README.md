@@ -83,7 +83,5 @@ CoLab is released under the MIT License. See the [LICENSE](https://github.com/en
 Thank you for using CoLab! We hope you find this collaboration platform helpful in enhancing your team's productivity and efficiency. If you have any questions or need assistance, please don't hesitate to contact us. Happy collaborating!
 
 Author: CoLab Team
-
 Repo Link: [https://github.com/ennas-de/CoLab](https://github.com/ennas-de/CoLab)
-
 Live URL: [https://colab.netlify.app](https://colab.netlify.app)
