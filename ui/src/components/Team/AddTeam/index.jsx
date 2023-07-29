@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTeam } from "../../redux/team/team.actions";
 
 const AddTeam = () => {
@@ -8,6 +8,9 @@ const AddTeam = () => {
     name: "",
     description: "",
   });
+
+  // Get the user's role from the Redux store
+  const userRole = useSelector((state) => state.auth.user?.role);
 
   // Function to handle form input changes
   const handleChange = (e) => {
@@ -18,9 +21,15 @@ const AddTeam = () => {
   // Function to handle team creation
   const handleCreateTeam = (e) => {
     e.preventDefault();
-    dispatch(createTeam(teamData));
-    // Reset form data after creating the team
-    setTeamData({ name: "", description: "" });
+    // Check if the user is a tutor before creating the team
+    if (userRole === "tutor") {
+      dispatch(createTeam(teamData));
+      // Reset form data after creating the team
+      setTeamData({ name: "", description: "" });
+    } else {
+      // Display a message or redirect if the user is not a tutor
+      alert("Only tutors are allowed to create teams.");
+    }
   };
 
   // Add any specific styles or classes for the AddTeam component here

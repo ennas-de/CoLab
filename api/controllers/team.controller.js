@@ -2,14 +2,19 @@
 
 const Team = require("../models/team.model.js");
 
-// Create a new team
-const createTeam = async (name, description) => {
+// Create a new team (Only tutors can perform this action)
+const createTeam = async (req, res) => {
   try {
-    const team = new Team({ name, description });
-    const savedTeam = await team.save();
-    return savedTeam;
+    // Add authorization check before creating a new team
+    await authorizeTutor(req, res, async () => {
+      const { name, description } = req.body;
+      const team = new Team({ name, description });
+
+      const savedTeam = await team.save();
+      res.status(201).json(savedTeam);
+    });
   } catch (error) {
-    throw new Error("Failed to create a new team.");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -36,33 +41,48 @@ const getTeamById = async (id) => {
   }
 };
 
-// Update a team by ID
-const updateTeamById = async (id, name, description) => {
+// Update an existing team by ID (Only tutors can perform this action)
+const updateTeamById = async (req, res) => {
   try {
-    const updatedTeam = await Team.findByIdAndUpdate(
-      id,
-      { name, description },
-      { new: true }
-    );
-    if (!updatedTeam) {
-      throw new Error("Team not found.");
-    }
-    return updatedTeam;
+    // Add authorization check before updating the team
+    await authorizeTutor(req, res, async () => {
+      const { id } = req.params;
+      const { name, description } = req.body;
+
+      const updatedTeam = await Team.findByIdAndUpdate(
+        id,
+        { name, description },
+        { new: true }
+      );
+
+      if (!updatedTeam) {
+        return res.status(404).json({ message: "Team not found" });
+      }
+
+      res.json(updatedTeam);
+    });
   } catch (error) {
-    throw new Error("Failed to update the team.");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// Delete a team by ID
-const deleteTeamById = async (id) => {
+// Delete an existing team by ID (Only tutors can perform this action)
+const deleteTeamById = async (req, res) => {
   try {
-    const deletedTeam = await Team.findByIdAndRemove(id);
-    if (!deletedTeam) {
-      throw new Error("Team not found.");
-    }
-    return deletedTeam;
+    // Add authorization check before deleting the team
+    await authorizeTutor(req, res, async () => {
+      const { id } = req.params;
+
+      const deletedTeam = await Team.findByIdAndDelete(id);
+
+      if (!deletedTeam) {
+        return res.status(404).json({ message: "Team not found" });
+      }
+
+      res.json(deletedTeam);
+    });
   } catch (error) {
-    throw new Error("Failed to delete the team.");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

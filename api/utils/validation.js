@@ -1,6 +1,7 @@
 // backend/services/validation.js
 
 const jwt = require("jsonwebtoken");
+const User = require("../models/user.model");
 
 // Function to generate access token
 const generateAccessToken = (user) => {
@@ -52,9 +53,43 @@ const verifyRefreshToken = (refreshToken) => {
   });
 };
 
+// Function to check if a user is a tutor
+const isTutor = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    return user.role === "tutor";
+  } catch (error) {
+    return false;
+  }
+};
+
+// Middleware to check if the user is a tutor
+const authorizeTutor = async (req, res, next) => {
+  try {
+    const { userId } = req; // Assuming you're setting the userId in the request during authentication
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const isUserTutor = await isTutor(userId);
+
+    if (!isUserTutor) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden. Only tutors can perform this action." });
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
   authenticateToken,
   verifyRefreshToken,
+  authorizeTutor,
 };

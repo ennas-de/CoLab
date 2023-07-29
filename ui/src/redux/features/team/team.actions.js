@@ -1,11 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../api";
 
-// Async Thunk to create a new team
-export const createTeam = createAsyncThunk("team/create", async (teamData) => {
-  const response = await API.post("/team", teamData);
-  return response.data;
-});
+// Function to check if the user is a tutor
+const isTutor = (user) => user.role === "tutor";
+
+// Async Thunk to create a new team (Only tutors can perform this action)
+export const createTeam = createAsyncThunk(
+  "team/create",
+  async (teamData, { getState }) => {
+    const { user } = getState().auth; // Assuming the authenticated user data is available in the auth state
+    if (!isTutor(user)) {
+      throw new Error("Only tutors can create teams.");
+    }
+
+    const response = await API.post("/team", teamData);
+    return response.data;
+  }
+);
 
 // Async Thunk to get all teams
 export const getAllTeams = createAsyncThunk("team/getAll", async () => {
@@ -19,20 +30,30 @@ export const getTeamById = createAsyncThunk("team/getById", async (teamId) => {
   return response.data;
 });
 
-// Async Thunk to update a team by ID
+// Async Thunk to update a team by ID (Only tutors can perform this action)
 export const updateTeamById = createAsyncThunk(
   "team/updateById",
-  async (teamData) => {
+  async (teamData, { getState }) => {
+    const { user } = getState().auth;
+    if (!isTutor(user)) {
+      throw new Error("Only tutors can update teams.");
+    }
+
     const { id, name, description } = teamData;
     const response = await API.put(`/team/${id}`, { name, description });
     return response.data;
   }
 );
 
-// Async Thunk to delete a team by ID
+// Async Thunk to delete a team by ID (Only tutors can perform this action)
 export const deleteTeamById = createAsyncThunk(
   "team/deleteById",
-  async (teamId) => {
+  async (teamId, { getState }) => {
+    const { user } = getState().auth;
+    if (!isTutor(user)) {
+      throw new Error("Only tutors can delete teams.");
+    }
+
     const response = await API.delete(`/team/${teamId}`);
     return response.data;
   }

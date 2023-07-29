@@ -12,6 +12,9 @@ const UpdateTeam = () => {
     description: "",
   });
 
+  // Get the user's role from the Redux store
+  const userRole = useSelector((state) => state.auth.user?.role);
+
   // Fetch the selected team data on component mount
   useEffect(() => {
     dispatch(getTeamById(id));
@@ -36,7 +39,13 @@ const UpdateTeam = () => {
   // Function to handle team update
   const handleUpdateTeam = (e) => {
     e.preventDefault();
-    dispatch(updateTeamById({ id, ...teamData }));
+    // Check if the user is a tutor before updating the team
+    if (userRole === "tutor") {
+      dispatch(updateTeamById({ id, ...teamData }));
+    } else {
+      // Display a message or redirect if the user is not a tutor
+      alert("Only tutors are allowed to update teams.");
+    }
   };
 
   // Add any specific styles or classes for the UpdateTeam component here
