@@ -5,10 +5,10 @@ const router = express.Router();
 const { authenticateToken } = require("../utils/validation.js");
 const {
   createCollaboration,
+  getAllCollaborationsByTeamAndSubteam,
   getCollaborationById,
-  getAllCollaborations,
-  updateCollaboration,
-  deleteCollaboration,
+  updateCollaborationById,
+  deleteCollaborationById,
 } = require("../controllers/collaboration.controller.js");
 
 // Route: POST /api/collaborations
@@ -21,14 +21,22 @@ router.get("/collaborations/:id", authenticateToken, getCollaborationById);
 
 // Route: GET /api/collaborations
 // Description: Get all collaborations
-router.get("/collaborations", authenticateToken, getAllCollaborations);
+router.get(
+  "/collaborations",
+  authenticateToken,
+  getAllCollaborationsByTeamAndSubteam
+);
 
 // Route: PUT /api/collaborations/:id
 // Description: Update a collaboration by ID
-router.put("/collaborations/:id", authenticateToken, updateCollaboration);
+router.put("/collaborations/:id", authenticateToken, updateCollaborationById);
 
 // Route: DELETE /api/collaborations/:id
 // Description: Delete a collaboration by ID
-router.delete("/collaborations/:id", authenticateToken, deleteCollaboration);
+router.delete(
+  "/collaborations/:id",
+  authenticateToken,
+  deleteCollaborationById
+);
 
 module.exports = router;

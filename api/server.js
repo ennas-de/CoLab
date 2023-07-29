@@ -14,12 +14,17 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
+// import routes
+const authRoutes = require("./routes/auth.routes.js");
+
 // Connect to MongoDB
+console.log(process.env.MONGODB_URI);
+
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
+  // useCreateIndex: true,
+  // useFindAndModify: false,
 });
 
 mongoose.connection.on("connected", () => {
@@ -27,7 +32,7 @@ mongoose.connection.on("connected", () => {
 });
 
 // Routes
-app.use("/api", require("./routes/auth.routes.js"));
+app.use("/api", authRoutes);
 app.use("/api", require("./routes/team.routes.js"));
 app.use("/api", require("./routes/subteam.routes.js"));
 app.use("/api", require("./routes/collaboration.routes.js"));

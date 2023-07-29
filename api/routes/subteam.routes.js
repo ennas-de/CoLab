@@ -5,10 +5,10 @@ const router = express.Router();
 const { authenticateToken } = require("../utils/validation.js");
 const {
   createSubteam,
+  getAllSubteamsByTeam,
   getSubteamById,
-  getAllSubteams,
-  updateSubteam,
-  deleteSubteam,
+  updateSubteamById,
+  deleteSubteamById,
 } = require("../controllers/subteam.controller.js");
 
 // Route: POST /api/subteams
@@ -21,14 +21,14 @@ router.get("/subteams/:id", authenticateToken, getSubteamById);
 
 // Route: GET /api/subteams
 // Description: Get all subteams
-router.get("/subteams", authenticateToken, getAllSubteams);
+router.get("/subteams", authenticateToken, getAllSubteamsByTeam);
 
 // Route: PUT /api/subteams/:id
 // Description: Update a subteam by ID
-router.put("/subteams/:id", authenticateToken, updateSubteam);
+router.put("/subteams/:id", authenticateToken, updateSubteamById);
 
 // Route: DELETE /api/subteams/:id
 // Description: Delete a subteam by ID
-router.delete("/subteams/:id", authenticateToken, deleteSubteam);
+router.delete("/subteams/:id", authenticateToken, deleteSubteamById);
 
 module.exports = router;
