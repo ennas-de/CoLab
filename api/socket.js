@@ -1,4 +1,4 @@
-// socket.js
+// backend/socket.js
 const socketIO = require("socket.io");
 
 // Function to initialize Socket.io and attach it to the server
@@ -11,7 +11,15 @@ const initializeSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("A user connected!");
 
-    // Handle socket events here
+    // Socket.io code update event
+    socket.on("codeUpdate", ({ roomId, code }) => {
+      handleCodeUpdate(roomId, code);
+    });
+
+    // Socket.io join room event
+    socket.on("joinRoom", ({ roomId }) => {
+      socket.join(roomId);
+    });
 
     // Socket.io disconnection event
     socket.on("disconnect", () => {
@@ -29,6 +37,19 @@ const initializeSocket = (server) => {
       });
     });
   });
+
+  // Function to handle real-time code updates in a collaboration room
+  const handleCodeUpdate = (roomId, code) => {
+    if (!collaborationRooms.has(roomId)) {
+      return;
+    }
+
+    // Update the code in the room
+    collaborationRooms.get(roomId).code = code;
+
+    // Emit the updated code to all clients in the room except the sender
+    socket.to(roomId).emit("codeUpdated", { code });
+  };
 
   return io;
 };
