@@ -48,3 +48,23 @@ export const deleteCollaborationById = createAsyncThunk(
     return response.data;
   }
 );
+
+
+
+// Async Thunk to join a collaboration room
+export const joinCollaborationRoom = createAsyncThunk(
+  "collaboration/joinRoom",
+  async ({ roomId, userId }) => {
+    const response = await API.post(`/collaboration/${roomId}/join`, { userId });
+    return response.data;
+  }
+);
+
+// Async Thunk to leave a collaboration room
+export const leaveCollaborationRoom = createAsyncThunk(
+  "collaboration/leaveRoom",
+  async ({ roomId, userId }) => {
+    const response = await API.post(`/collaboration/${roomId}/leave`, { userId });
+    return response.data;
+  }
+);

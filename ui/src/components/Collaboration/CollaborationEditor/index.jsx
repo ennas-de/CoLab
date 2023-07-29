@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { saveAs } from "file-saver";
 import { selectUser } from "../../auth/authSlice";
 import {
   createCollaboration,
@@ -71,12 +72,13 @@ const CollaborationEditor = () => {
   };
 
   const handleDownloadCode = () => {
-    // Code to download the collaboration code as a file
-    // Assuming you have implemented the download functionality
-    // You can use the 'file-saver' library or other methods to download files
-    // For example, using the 'file-saver' library:
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "collaboration_code.txt");
+    // Download the collaboration code as a file
+    if (collaboration) {
+      const blob = new Blob([collaboration.content], {
+        type: "text/plain;charset=utf-8",
+      });
+      saveAs(blob, "collaboration_code.txt");
+    }
   };
 
   return (

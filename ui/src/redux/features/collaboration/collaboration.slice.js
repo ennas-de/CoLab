@@ -6,6 +6,8 @@ import {
   getCollaborationById,
   updateCollaborationById,
   deleteCollaborationById,
+  joinCollaborationRoom,
+  leaveCollaborationRoom,
 } from "./collaboration.actions";
 
 // Initial state for the collaboration slice
@@ -85,6 +87,53 @@ const collaborationSlice = createSlice({
         );
       })
       .addCase(deleteCollaborationById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+            // Join a collaboration room
+      .addCase(joinCollaborationRoom.pending, (state) => {
+        state.status = "loading";
+      })
+.addCase(joinCollaborationRoom.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const roomId = action.payload.roomId;
+        const userId = action.payload.userId;
+
+        // Find the collaboration in state.collaborations by roomId
+        const collaboration = state.collaborations.find(
+          (collab) => collab._id === roomId
+        );
+
+        if (collaboration) {
+          // Add the user ID to the collaboration's users set
+          collaboration.users.add(userId);
+        }
+      })
+      .addCase(joinCollaborationRoom.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      // Leave a collaboration room
+      .addCase(leaveCollaborationRoom.pending, (state) => {
+        state.status = "loading";
+      })
+       .addCase(leaveCollaborationRoom.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const roomId = action.payload.roomId;
+        const userId = action.payload.userId;
+
+        // Find the collaboration in state.collaborations by roomId
+        const collaboration = state.collaborations.find(
+          (collab) => collab._id === roomId
+        );
+
+        if (collaboration) {
+          // Remove the user ID from the collaboration's users set
+          collaboration.users.delete(userId);
+        }
+      })
+      .addCase(leaveCollaborationRoom.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
