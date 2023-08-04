@@ -1,23 +1,10 @@
-// frontend/src/main.js
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./store";
-import App from "./App";
-import SocketContextProvider from "./contexts/SocketContext";
-import "./index.css";
-
-const socketServerUrl = import.meta.env.VITE_SOCKET_SERVER_URL;
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <SocketContextProvider socketServerUrl={socketServerUrl}>
-          <App />
-        </SocketContextProvider>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>
-);
+    <App />
+  </React.StrictMode>,
+)
