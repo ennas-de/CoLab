@@ -4,7 +4,6 @@
   "description": "CoLab is a Real-Time Collaboration tool for...",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "build": "npm i"
   },
