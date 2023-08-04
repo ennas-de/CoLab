@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Landing = () => {
   return (
@@ -36,7 +37,18 @@ const Landing = () => {
             Sign up now and join our community to unlock a world of
             opportunities in tech!
           </p>
-          {/* Add Sign up and Login buttons here */}
+          <div className="flex mt-4 space-x-4">
+            <Link
+              to="/register"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
+              Register
+            </Link>
+            <Link
+              to="/login"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+              Login
+            </Link>
+          </div>
         </div>
       </div>
     </div>

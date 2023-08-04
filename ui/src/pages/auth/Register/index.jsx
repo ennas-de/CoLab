@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../redux/auth/auth.actions";
+import { registerUser } from "../../../redux/features/auth/auth.actions";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,12 @@ const Register = () => {
             Register
           </button>
         </form>
+        <p className="mt-4 text-gray-600">
+          Already registered?{" "}
+          <Link to="/login" className="text-purple-500">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
