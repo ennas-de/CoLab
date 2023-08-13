@@ -19,7 +19,7 @@ router.post("/login", loginUser);
 
 // Route: POST /api/auth/signup
 // Description: User signup
-router.post("/signup", registerUser);
+router.post("/register", registerUser);
 
 // Route: POST /api/auth/logout
 // Description: User logout (revoke refresh token)

@@ -9,7 +9,7 @@ const http = require("http");
 const initializeSocket = require("./socket.js");
 
 // import routes
-const authRoutes = require("./routes/auth.routes.js");
+const Routes = require("./routes/index.js");
 
 // Create Express app
 const app = express();
@@ -136,10 +136,13 @@ io.on("connection", (socket) => {
 });
 
 // Routes
-app.use("/api", authRoutes);
-app.use("/api", require("./routes/team.routes.js"));
-app.use("/api", require("./routes/subteam.routes.js"));
-app.use("/api", require("./routes/collaboration.routes.js"));
+app.use("/api/v1", Routes);
+app.get("/api", (req, res) => {
+  res.send("Hello, Welcome to the CoLab platform api!");
+});
+app.use("*", (req, res) => {
+  res.send("Thanks for visiting, but please use the right channels!");
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;

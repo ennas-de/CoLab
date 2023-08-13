@@ -12,17 +12,35 @@ const {
 // Controller function to register a new user
 const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    // console.log(req.body);
+
+    const { username, password, email, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!username || !password || !email || !role)
+      return res.status(400).json({ message: "All fields are mandatory." });
+
+    let foundUsername;
+    let foundEmail;
+    foundUsername = await User.findOne({ username });
+    foundEmail = await User.findOne({ email });
+    if (foundUsername)
+      return res.status(403).json({ message: "Username already taken." });
+    if (foundEmail)
+      return res.status(403).json({ message: "Email already taken." });
 
     const newUser = new User({
       username,
+      email,
       password: hashedPassword,
+      role,
     });
 
     await newUser.save();
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
+    console.log(error.message);
+
     res.status(500).json({ error: "Failed to register user." });
   }
 };
