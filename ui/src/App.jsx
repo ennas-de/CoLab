@@ -2,20 +2,34 @@ import React, { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 // Components for different pages
-import Landing from "./pages/Landing";
-import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import Landing from "./pages/Landing";
+import Home from "./pages/Dashboard/Home";
+import TeamList from "./pages/Dashboard/Team";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { auth } = useSelector((state) => state.auth);
-  console.log(auth);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { auth } = useSelector((state) => state);
+
+  const { isAuthenticated } = auth;
+
+  // if (auth?.user) setIsLoggedIn(true);
+
+  // console.log("auth -", auth);
 
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
+      {/* <Route path="/dashboard/*" element={<Home />}> */}
+      <Route path="/dashboard" element={<Home />} />
+      <Route path="/dashboard/team" element={<TeamList />} />
+      {/* </Route> */}
+
+      {/* <Route path="/dashboard" element={isLoggedIn ? <Home /> : <Login />} /> */}
       {/* <div>
         <nav>
           <ul>
@@ -24,18 +38,18 @@ function App() {
                 <Landing />
               </Link>
             </li>
-            {/* {isLoggedIn ? (
+            {isLoggedIn ? (
               <>
                 <li>
                   <Link to="/profile">Profile</Link>
                 </li>
                 <li>//</li>
               </>
-            ) : null} */}
-      {/* </ul> */}
-      {/* // </nav> */}
-
-      {/* <Route>
+            ) : null}
+          </ul>
+        </nav>
+              /*
+         <Route>
           <Route path="/profile">
             <ProfilePage />
           </Route>
@@ -43,8 +57,9 @@ function App() {
           <Route path="/">
             <LandingPage />
           </Route>
-        </Route> */}
-      {/* </div> */}
+        </Route> 
+        
+      </div> */}
     </Routes>
   );
 }

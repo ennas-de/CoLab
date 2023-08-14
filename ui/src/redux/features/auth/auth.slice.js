@@ -12,7 +12,7 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   status: "idle",
-  error: null,
+  message: "",
 };
 
 const authSlice = createSlice({
@@ -27,25 +27,29 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
-        state.isAuthenticated = true;
+        state.message = action.payload.message;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        console.log(action);
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Login user
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
+        state.message = "";
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.message = "Login Successful";
       })
       .addCase(loginUser.rejected, (state, action) => {
+        console.log(action);
+
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Logout user
       .addCase(logoutUser.pending, (state) => {
@@ -58,7 +62,8 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        // state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get new access token using the refresh token
       .addCase(getAccessToken.pending, (state) => {
@@ -71,7 +76,8 @@ const authSlice = createSlice({
       })
       .addCase(getAccessToken.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        // state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get user profile
       .addCase(getUserProfile.pending, (state) => {
@@ -84,10 +90,9 @@ const authSlice = createSlice({
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        // state.error = action.error.message;
+        state.message = action.payload;
       });
-    // Rest of the CRUD functionalities follow a similar pattern.
-    // ...
   },
 });
 

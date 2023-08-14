@@ -4,17 +4,39 @@ import API from "../../api/api";
 // Async Thunk to register a new user
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async (userData) => {
-    const response = await API.post("/auth/register", userData);
-    return response.data;
+  async (userData, { rejectWithValue }) => {
+    try {
+      const { username, email, role, password } = userData;
+
+      const response = await API.post("/auth/register", {
+        username,
+        email,
+        role,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      // console.log(error.response.data.message);
+      return rejectWithValue(error.response.data.message);
+    }
   }
 );
 
 // Async Thunk to login user
-export const loginUser = createAsyncThunk("auth/login", async (userData) => {
-  const response = await API.post("/auth/login", userData);
-  return response.data;
-});
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const { userdetail, password } = userData;
+
+      const response = await API.post("/auth/login", { userdetail, password });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 // Async Thunk to logout user
 export const logoutUser = createAsyncThunk("auth/logout", async () => {

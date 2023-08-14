@@ -17,7 +17,12 @@ const server = http.createServer(app);
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  })
+);
 app.use(morgan("dev"));
 
 // Connect to MongoDB
@@ -141,7 +146,9 @@ app.get("/api", (req, res) => {
   res.send("Hello, Welcome to the CoLab platform api!");
 });
 app.use("*", (req, res) => {
-  res.send("Thanks for visiting, but please use the right channels!");
+  res
+    .status(404)
+    .json("Thanks for visiting, but please use the right channels!");
 });
 
 // Start the server

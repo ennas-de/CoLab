@@ -21,7 +21,7 @@ router.get("/teams/:id", authenticateToken, getTeamById);
 
 // Route: GET /api/teams
 // Description: Get all teams
-router.get("/teams", authenticateToken, getAllTeams);
+router.get("/", authenticateToken, getAllTeams);
 
 // Route: PUT /api/teams/:id
 // Description: Update a team by ID

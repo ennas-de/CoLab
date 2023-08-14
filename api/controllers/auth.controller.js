@@ -12,7 +12,7 @@ const {
 // Controller function to register a new user
 const registerUser = async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
 
     const { username, password, email, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,9 +25,15 @@ const registerUser = async (req, res) => {
     foundUsername = await User.findOne({ username });
     foundEmail = await User.findOne({ email });
     if (foundUsername)
-      return res.status(403).json({ message: "Username already taken." });
+      return res.status(401).json({ message: "Username already taken." });
     if (foundEmail)
-      return res.status(403).json({ message: "Email already taken." });
+      return res.status(401).json({ message: "Email already taken." });
+
+    if (role === "admin") {
+      return res.status(401).json({
+        message: "Unauthorized! We don't have admin users on this platform.",
+      });
+    }
 
     const newUser = new User({
       username,
@@ -39,29 +45,37 @@ const registerUser = async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
-    console.log(error.message);
-
-    res.status(500).json({ error: "Failed to register user." });
+    // console.log(error.message);
+    res.status(500).json({ message: "Failed to register user." });
   }
 };
 
 // Controller function to login user and generate access and refresh tokens
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const { userdetail } = req.body;
+    console.log(req.body);
+
+    let user;
+    user = await User.findOne({ username: userdetail });
+    if (!user) user = await User.findOne({ email: userdetail });
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const { password, ...others } = user._doc;
+
+    const accessToken = generateAccessToken(others);
+    const refreshToken = generateRefreshToken(others);
 
     // Set the refresh token as an HttpOnly cookie
     res.cookie("refreshToken", refreshToken, {
@@ -72,7 +86,9 @@ const loginUser = async (req, res) => {
 
     res.json({ accessToken });
   } catch (error) {
-    res.status(500).json({ error: "Failed to login." });
+    console.log(error.message);
+
+    res.status(500).json({ message: "Failed to login." });
   }
 };
 
@@ -87,7 +103,7 @@ const getAccessToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
-    return res.status(401).json({ error: "Refresh token not found." });
+    return res.status(401).json({ message: "Refresh token not found." });
   }
 
   try {
@@ -96,7 +112,7 @@ const getAccessToken = async (req, res) => {
 
     res.json({ accessToken });
   } catch (error) {
-    res.status(403).json({ error: "Refresh token is invalid or expired." });
+    res.status(403).json({ message: "Refresh token is invalid or expired." });
   }
 };
 

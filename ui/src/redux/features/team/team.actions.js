@@ -20,7 +20,7 @@ export const createTeam = createAsyncThunk(
 
 // Async Thunk to get all teams
 export const getAllTeams = createAsyncThunk("team/getAll", async () => {
-  const response = await API.get("/team");
+  const response = await API.get("/team/");
   return response.data;
 });
 

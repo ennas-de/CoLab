@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
       "supervisor",
       "lead",
     ],
+    default: "student",
     required: true,
   },
 });

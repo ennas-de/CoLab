@@ -3,8 +3,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://colab-bn2s.onrender.com", // Production backend API base URL
-  // baseURL: "http://localhost:5000/api", // Development backend API base URL
+  // baseURL: "https://colab-bn2s.onrender.com", // Production backend API base URL
+  baseURL: "http://localhost:5000/api/v1", // Development backend API base URL
   timeout: 5000, // Timeout in milliseconds
   withCredentials: true, // To send cookies along with requests
 });

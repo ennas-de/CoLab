@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../redux/features/auth/auth.actions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
   const authStatus = useSelector((state) => state.auth.status);
-  const error = useSelector((state) => state.auth.error);
+  const message = useSelector((state) => state.auth.message);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    username: "",
+    userdetail: "",
     password: "",
   });
 
@@ -21,28 +22,37 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser(formData));
+    console.log("Loging in user...");
   };
+
+  useEffect(() => {
+    if (authStatus === "succeeded" && message === "Login Successful") {
+      navigate("/dashboard");
+    }
+  }, [message, authStatus, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-500 to-indigo-700 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Login</h1>
-        {authStatus === "failed" && (
-          <p className="text-red-500 mb-4">{error}</p>
+        {authStatus === "succeeded" ? (
+          <p className="text-green-500 mb-4">{message}</p>
+        ) : (
+          <p className="text-red-500 mb-4">{message}</p>
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              htmlFor="username"
+              htmlFor="userdetail"
               className="block text-gray-800 font-semibold">
               Username
             </label>
             <input
               type="text"
-              id="username"
-              name="username"
+              id="userdetail"
+              name="userdetail"
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-purple-500"
-              value={formData.username}
+              value={formData.userdetail}
               onChange={handleChange}
               required
             />

@@ -27,7 +27,7 @@ router.post("/logout", authenticateToken, logoutUser);
 
 // Route: POST /api/auth/refresh-token
 // Description: Refresh access token using refresh token
-router.post("/refresh-token", async (req, res) => {
+router.post("/refresh", async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     return res.status(401).json({ message: "Refresh token not found." });

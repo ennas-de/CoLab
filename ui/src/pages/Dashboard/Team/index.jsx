@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { getAllTeams } from "../../redux/team/team.actions";
+// import { useHistory } from "react-router-dom";
+import { getAllTeams } from "../../../redux/features/team/team.actions";
 
 const TeamList = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  // const history = useHistory();
   const teams = useSelector((state) => state.team.teams);
 
   useEffect(() => {
@@ -15,10 +15,10 @@ const TeamList = () => {
   // Redirect to login if not authenticated
   // You can also add role-based access control here if required
   const user = useSelector((state) => state.auth.user);
-  if (!user) {
-    history.push("/login");
-    return null;
-  }
+  // if (!user) {
+  //   history.push("/login");
+  //   return null;
+  // }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
