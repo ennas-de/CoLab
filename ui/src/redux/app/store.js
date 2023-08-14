@@ -1,20 +1,36 @@
-// frontend/src/store.js
+//
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import rootReducer from "../services/rootReducer";
 
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../features/auth/auth.slice";
-// import userReducer from "../features/user/user.slice";
-import collaborationReducer from "../features/collaboration/collaboration.slice";
-import subteamReducer from "../features/subteam/subteam.slice";
-import teamReducer from "../features/team/team.slice";
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["auth"], // blacklist to exclude "auth" from beign persisted
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    // user: userReducer,
-    collaboration: collaborationReducer,
-    subteam: subteamReducer,
-    team: teamReducer,
-  },
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-export default store;
+const persistor = persistStore(store);
+
+export { store, persistor };

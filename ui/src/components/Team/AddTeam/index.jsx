@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createTeam } from "../../redux/team/team.actions";
+import { createTeam } from "../../../redux/features/team/team.actions";
 
 const AddTeam = () => {
   const dispatch = useDispatch();
@@ -8,6 +8,9 @@ const AddTeam = () => {
     name: "",
     description: "",
   });
+
+  const user = useSelector((state) => state.auth.user);
+  console.log(user);
 
   // Get the user's role from the Redux store
   const userRole = useSelector((state) => state.auth.user?.role);

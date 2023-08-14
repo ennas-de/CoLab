@@ -6,6 +6,7 @@ import {
   getAccessToken,
   getUserProfile,
 } from "./auth.actions";
+// import { PURGE } from "redux-persist";
 
 // Initial state for the auth slice
 const initialState = {
@@ -15,9 +16,16 @@ const initialState = {
   message: "",
 };
 
+// Load the persisted state from local storage if available
+const persistedState = JSON.parse(localStorage.getItem("persist: root"));
+const updatedInitialState = {
+  ...initialState,
+  ...persistedState?.auth, // Use persisted state if available
+};
+
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: updatedInitialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -59,10 +67,10 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.user = null;
         state.isAuthenticated = false;
+        localStorage.removeItem("accessToken");
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";
-        // state.error = action.error.message;
         state.message = action.payload;
       })
       // Get new access token using the refresh token
@@ -76,7 +84,6 @@ const authSlice = createSlice({
       })
       .addCase(getAccessToken.rejected, (state, action) => {
         state.status = "failed";
-        // state.error = action.error.message;
         state.message = action.payload;
       })
       // Get user profile
@@ -90,7 +97,6 @@ const authSlice = createSlice({
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.status = "failed";
-        // state.error = action.error.message;
         state.message = action.payload;
       });
   },

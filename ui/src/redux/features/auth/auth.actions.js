@@ -31,6 +31,8 @@ export const loginUser = createAsyncThunk(
 
       const response = await API.post("/auth/login", { userdetail, password });
 
+      localStorage.setItem("accessToken", response.data.accessToken);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

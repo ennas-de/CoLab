@@ -5,6 +5,8 @@ const Team = require("../models/team.model.js");
 // Create a new team (Only tutors can perform this action)
 const createTeam = async (req, res) => {
   try {
+    console.log(req);
+
     // Add authorization check before creating a new team
     await authorizeTutor(req, res, async () => {
       const { name, description } = req.body;

@@ -7,6 +7,7 @@ import Login from "./pages/auth/Login";
 import Landing from "./pages/Landing";
 import Home from "./pages/Dashboard/Home";
 import TeamList from "./pages/Dashboard/Team";
+import AddTeam from "./components/Team/AddTeam";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,6 +28,7 @@ function App() {
       {/* <Route path="/dashboard/*" element={<Home />}> */}
       <Route path="/dashboard" element={<Home />} />
       <Route path="/dashboard/team" element={<TeamList />} />
+      <Route path="/dashboard/team/add" element={<AddTeam />} />
       {/* </Route> */}
 
       {/* <Route path="/dashboard" element={isLoggedIn ? <Home /> : <Login />} /> */}
