@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getTeamById, updateTeamById } from "../../redux/team/team.actions";
+import {
+  getTeamById,
+  updateTeamById,
+} from "../../../redux/features/team/team.actions";
 
 const UpdateTeam = () => {
   const dispatch = useDispatch();
@@ -13,7 +16,8 @@ const UpdateTeam = () => {
   });
 
   // Get the user's role from the Redux store
-  const userRole = useSelector((state) => state.auth.user?.role);
+  const userRole = "tutor";
+  // const userRole = useSelector((state) => state.auth.user?.role);
 
   // Fetch the selected team data on component mount
   useEffect(() => {
@@ -42,6 +46,7 @@ const UpdateTeam = () => {
     // Check if the user is a tutor before updating the team
     if (userRole === "tutor") {
       dispatch(updateTeamById({ id, ...teamData }));
+      console.log("Updating team...");
     } else {
       // Display a message or redirect if the user is not a tutor
       alert("Only tutors are allowed to update teams.");

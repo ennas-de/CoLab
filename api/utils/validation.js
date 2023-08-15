@@ -9,7 +9,7 @@ const generateAccessToken = (user) => {
     { id: user._id, username: user.username },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "15m",
+      expiresIn: "7d",
     }
   );
 };
@@ -66,7 +66,7 @@ const isTutor = async (userId) => {
 // Middleware to check if the user is a tutor
 const authorizeTutor = async (req, res, next) => {
   try {
-    const { userId } = req; // Assuming you're setting the userId in the request during authentication
+    const userId = req.user.id; // Assuming you're setting the userId in the request during authentication
 
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSubteam } from "../../redux/subteam/subteam.actions";
+import { createSubteam } from "../../../redux/features/subteam/subteam.actions";
+import { useParams } from "react-router-dom";
 
 const AddSubteam = ({ teamId }) => {
   const dispatch = useDispatch();
+  const params = useParams();
+  const id = params.id;
+
   const [subteamData, setSubteamData] = useState({
     name: "",
     description: "",

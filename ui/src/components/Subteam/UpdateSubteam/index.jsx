@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getSubteamById,
   updateSubteamById,
-} from "../../redux/subteam/subteam.actions";
+} from "../../../redux/features/subteam/subteam.actions";
 
 const UpdateSubteam = ({ subteamId }) => {
   const dispatch = useDispatch();

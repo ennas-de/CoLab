@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Redirect, useParams } from "react-router-dom";
-import { getAllSubteamsByTeam } from "../../redux/subteam/subteam.actions";
-import API from "../../api";
+import { useParams } from "react-router-dom";
+import { getAllSubteamsByTeam } from "../../../redux/features/subteam/subteam.actions";
+import API from "../../../redux/api/api";
 
 const AddMemberToTeam = () => {
   const dispatch = useDispatch();
   const subteams = useSelector((state) => state.subteam.subteams);
   const userRole = useSelector((state) => state.auth.user?.role); // Get the user's role from the authentication state
-  const { teamId } = useParams(); // Get the teamId from the URL params
+  const { id } = useParams(); // Get the teamId from the URL params
+
+  console.log(id);
 
   useEffect(() => {
     // Fetch all subteams for the specified team when the component mounts
-    dispatch(getAllSubteamsByTeam(teamId));
-  }, [dispatch, teamId]);
+    dispatch(getAllSubteamsByTeam(id));
+  }, [dispatch, id]);
 
   // Check if the user is a tutor, if not, redirect to the home page
-  if (userRole !== "tutor") {
-    return <Redirect to="/home" />;
-  }
+  // if (userRole !== "tutor") {
+  //   return <Redirect to="/home" />;
+  // }
 
   // Add any specific styles or classes for the AddMemberToTeam component here
-  // You can use Tailwind CSS classes or custom styles
 
   // State for the search input and search results
   const [searchInput, setSearchInput] = useState("");
@@ -47,7 +48,7 @@ const AddMemberToTeam = () => {
   const handleAddUserToTeam = async (userId) => {
     try {
       // Make API call to add the user to the team
-      await API.post(`/team/${teamId}/add-member`, { userId });
+      await API.post(`/teams/${teamId}/add-member`, { userId });
       // Refresh the list of subteams to show the updated members
       dispatch(getAllSubteamsByTeam(teamId));
     } catch (error) {

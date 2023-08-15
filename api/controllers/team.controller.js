@@ -1,43 +1,46 @@
 // backend/controllers/team.controller.js
 
 const Team = require("../models/team.model.js");
+const { authorizeTutor } = require("../utils/validation.js");
 
 // Create a new team (Only tutors can perform this action)
 const createTeam = async (req, res) => {
   try {
-    console.log(req);
-
     // Add authorization check before creating a new team
     await authorizeTutor(req, res, async () => {
       const { name, description } = req.body;
-      const team = new Team({ name, description });
+      const user = req.user.id;
+      const team = new Team({ name, description, tutor: user });
 
       const savedTeam = await team.save();
       res.status(201).json(savedTeam);
     });
   } catch (error) {
+    console.log(error.message);
+
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // Get all teams
-const getAllTeams = async () => {
+const getAllTeams = async (req, res) => {
   try {
     const teams = await Team.find();
-    return teams;
+    res.status(200).json(teams);
   } catch (error) {
     throw new Error("Failed to get teams.");
   }
 };
 
 // Get a single team by ID
-const getTeamById = async (id) => {
+const getTeamById = async (req, res) => {
   try {
-    const team = await Team.findById(id);
+    const team = await Team.findById(req.params.id);
     if (!team) {
-      throw new Error("Team not found.");
+      res.status(404).json({ message: "Team not found." });
     }
-    return team;
+
+    res.status(200).json(team);
   } catch (error) {
     throw new Error("Failed to get the team.");
   }
@@ -49,6 +52,8 @@ const updateTeamById = async (req, res) => {
     // Add authorization check before updating the team
     await authorizeTutor(req, res, async () => {
       const { id } = req.params;
+      console.log(id);
+
       const { name, description } = req.body;
 
       const updatedTeam = await Team.findByIdAndUpdate(

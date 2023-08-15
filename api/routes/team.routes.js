@@ -2,7 +2,6 @@
 
 const express = require("express");
 const router = express.Router();
-const { authenticateToken } = require("../utils/validation.js");
 const {
   createTeam,
   getAllTeams,
@@ -11,24 +10,24 @@ const {
   deleteTeamById,
 } = require("../controllers/team.controller.js");
 
+// Route: GET /api/teams
+// Description: Get all teams
+router.get("/", getAllTeams);
+
 // Route: POST /api/teams
 // Description: Create a new team
-router.post("/teams", authenticateToken, createTeam);
+router.post("/", createTeam);
 
 // Route: GET /api/teams/:id
 // Description: Get a team by ID
-router.get("/teams/:id", authenticateToken, getTeamById);
-
-// Route: GET /api/teams
-// Description: Get all teams
-router.get("/", authenticateToken, getAllTeams);
+router.get("/:id", getTeamById);
 
 // Route: PUT /api/teams/:id
 // Description: Update a team by ID
-router.put("/teams/:id", authenticateToken, updateTeamById);
+router.put("/:id", updateTeamById);
 
 // Route: DELETE /api/teams/:id
 // Description: Delete a team by ID
-router.delete("/teams/:id", authenticateToken, deleteTeamById);
+router.delete("/:id", deleteTeamById);
 
 module.exports = router;

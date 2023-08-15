@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createTeam } from "../../../redux/features/team/team.actions";
+import jwtDecode from "jwt-decode";
 
 const AddTeam = () => {
   const dispatch = useDispatch();
@@ -9,11 +10,14 @@ const AddTeam = () => {
     description: "",
   });
 
-  const user = useSelector((state) => state.auth.user);
-  console.log(user);
+  // const user = useSelector((state) => state.auth.user);
+  // console.log(user);
+  // const role = jwtDecode(user.accessToken);
+  // console.log(role);
 
   // Get the user's role from the Redux store
-  const userRole = useSelector((state) => state.auth.user?.role);
+  // const userRole = useSelector((state) => state.auth.user?.role);
+  const userRole = "tutor";
 
   // Function to handle form input changes
   const handleChange = (e) => {

@@ -14,12 +14,13 @@ const createSubteam = async (teamId, name, description) => {
 };
 
 // Get all subteams for a specific team
-const getAllSubteamsByTeam = async (teamId) => {
+const getAllSubteamsByTeam = async (req, res) => {
   try {
+    const teamId = req.params.id;
     const subteams = await Subteam.find({ team: teamId });
-    return subteams;
+    res.status(200).json(subteams);
   } catch (error) {
-    throw new Error("Failed to get subteams.");
+    res.status(500).json({ message: "Failed to get subteams." });
   }
 };
 

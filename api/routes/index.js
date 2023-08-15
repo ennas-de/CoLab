@@ -11,9 +11,9 @@ const { authenticateToken } = require("../utils/validation.js");
 // implement routes
 router.use("/auth", authRoutes);
 // router.use("/profile", profileRoutes);
-router.use("/team", authenticateToken, teamRoutes);
-router.use("/subteam", authenticateToken, subTeamRoutes);
-router.use("/collaboration", authenticateToken, collaborationRoutes);
+router.use("/teams", authenticateToken, teamRoutes);
+router.use("/:id/subteams", authenticateToken, subTeamRoutes);
+router.use("/collaborations", authenticateToken, collaborationRoutes);
 // app.use("/api", require("./routes/team.routes.js"));
 // app.use("/api", require("./routes/subteam.routes.js"));
 // app.use("/api", require("./routes/collaboration.routes.js"));

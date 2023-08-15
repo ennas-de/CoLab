@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubteamById } from "../../redux/subteam/subteam.actions";
+import { getSubteamById } from "../../../redux/features/subteam/subteam.actions";
 
-const Subteam = () => {
+const SubteamDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const selectedSubteam = useSelector((state) => state.subteam.selectedSubteam);
@@ -31,4 +31,4 @@ const Subteam = () => {
   );
 };
 
-export default Subteam;
+export default SubteamDetail;
