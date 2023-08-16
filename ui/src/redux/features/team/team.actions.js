@@ -19,12 +19,18 @@ export const createTeam = createAsyncThunk(
 );
 
 // Async Thunk to get all teams
-export const getAllTeams = createAsyncThunk("team/getAll", async () => {
-  const response = await API.get("/teams/");
-  // console.log(response.data);`
+export const getAllTeams = createAsyncThunk(
+  "team/getAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await API.get("/teams/");
 
-  return response.data;
-});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 // Async Thunk to get a single team by ID
 export const getTeamById = createAsyncThunk(

@@ -19,13 +19,15 @@ const initializeSocket = (server) => {
     // Socket.io join room event
     socket.on("joinRoom", ({ roomId }) => {
       socket.join(roomId);
+      handleUserJoin(roomId, socket.id); // Handle user joining
     });
 
-        // Listen for user leaving a room (optional)
+    // Listen for user leaving a room
     socket.on("leaveRoom", ({ roomId }) => {
       socket.leave(roomId);
+      handleUserLeave(roomId, socket.id); // Handle user leaving
     });
-    
+
     // Socket.io disconnection event
     socket.on("disconnect", () => {
       console.log("A user disconnected!");
@@ -53,7 +55,31 @@ const initializeSocket = (server) => {
     collaborationRooms.get(roomId).code = code;
 
     // Emit the updated code to all clients in the room except the sender
-    socket.to(roomId).emit("codeUpdated", { code });
+    io.to(roomId).emit("codeUpdated", { code });
+  };
+
+  // Function to handle user joining a room
+  const handleUserJoin = (roomId, userId) => {
+    if (!collaborationRooms.has(roomId)) {
+      return;
+    }
+
+    collaborationRooms.get(roomId).users.add(userId);
+
+    // Emit user joined event to all clients in the room
+    io.to(roomId).emit("userJoined", { userId });
+  };
+
+  // Function to handle user leaving a room
+  const handleUserLeave = (roomId, userId) => {
+    if (!collaborationRooms.has(roomId)) {
+      return;
+    }
+
+    collaborationRooms.get(roomId).users.delete(userId);
+
+    // Emit user left event to all clients in the room
+    io.to(roomId).emit("userLeft", { userId });
   };
 
   return io;

@@ -11,11 +11,14 @@ import AddTeam from "./components/Team/AddTeam";
 import TeamDetail from "./components/Team/TeamDetail";
 import UpdateTeam from "./components/Team/UpdateTeam";
 import AddMemberToTeam from "./components/Team/AddMemberToTeam";
-import SubteamList from "./pages/Dashboard/Subteam";
-import SubteamDetail from "./components/Subteam/SubteamDetail";
 import AddSubteam from "./components/Subteam/AddSubteam";
-import SubteamMembers from "./../../ui - old/src/components/Subteam/SubteamMembers/index";
-import UpdateSubteam from "./../../ui - old/src/components/Subteam/UpdateSubteam/index";
+import SubteamMembers from "./components/Subteam/SubteamMembers";
+import UpdateSubteam from "./components/Subteam/UpdateSubteam";
+import AddMembersToSubteam from "./components/Subteam/AddMembersToSubteam";
+import CollaborationList from "./pages/Dashboard/Collaboration/CollaborationListPage";
+import CollaborationDetailPage from "./pages/Dashboard/Collaboration/CollaborationDetailPage";
+import CollaborationEditorPage from "./pages/Dashboard/Collaboration/CollaborationListPage/index";
+import SubteamDetail from "./components/Subteam/SubteamDetail";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,16 +38,16 @@ function App() {
 
       {/* <Route path="/dashboard/*" element={<Home />}> */}
       <Route path="/dashboard" element={<Home />} />
-      {/* teams */}
+      {/* Teams route */}
       <Route path="/dashboard/teams" element={<TeamList />} />
       <Route path="/dashboard/teams/create" element={<AddTeam />} />
-      <Route path="/dashboard/teams/:id" element={<TeamDetail />} />
-      <Route path="/dashboard/teams/edit/:id" element={<UpdateTeam />} />
+      <Route path="/dashboard/teams/:teamId" element={<TeamDetail />} />
+      <Route path="/dashboard/teams/edit/:teamIid" element={<UpdateTeam />} />
       <Route
-        path="/dashboard/teams/:id/add-user"
+        path="/dashboard/teams/:teamId/add-member"
         element={<AddMemberToTeam />}
       />
-      {/* subteams  */}
+      {/* Subteams routes */}
       {/* <Route
         path="/dashboard/teams/:teamId/subteams"
         element={<SubteamList />}
@@ -58,25 +61,31 @@ function App() {
         element={<AddSubteam />}
       />
       <Route
-        path="/dashboard/teams/:teamId/subteams"
+        path="/dashboard/teams/:teamId/subteams/edit"
         element={<UpdateSubteam />}
       />
       <Route
-        path="/dashboard/teams/:teamId/subteams/members"
+        path="/dashboard/teams/:teamId/subteams/:subteamId/members"
         element={<SubteamMembers />}
       />
       <Route
-        path="/dashboard/teams/:teamId/subteams/:subteamId/add"
-        element={<AddMemberToTeam />}
+        path="/dashboard/teams/:teamId/subteams/:subteamId/members/add"
+        element={<AddMembersToSubteam />}
       />
-      {/* <Route
-        path="/dashboard/teams/:id/subteams"
-        element={<AddMemberToTeam />}
+      {/* Collaborations route */}
+      <Route
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations"
+        element={<CollaborationList />}
       />
       <Route
-        path="/dashboard/teams/:id/subteams"
-        element={<AddMemberToTeam />}
-      /> */}
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaboration/:collaborationId"
+        element={<CollaborationDetailPage />}
+      />
+      <Route
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaboration/:collaborationId"
+        element={<CollaborationEditorPage />}
+      />
+
       {/* </Route> */}
 
       {/* <Route path="/dashboard" element={isLoggedIn ? <Home /> : <Login />} /> */}

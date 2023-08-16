@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSubteam } from "../../../redux/features/subteam/subteam.actions";
 import { useParams } from "react-router-dom";
 
-const AddSubteam = ({ teamId }) => {
+const AddSubteam = () => {
   const dispatch = useDispatch();
   const params = useParams();
-  const id = params.id;
+  const teamId = params.teamId;
 
   const [subteamData, setSubteamData] = useState({
     name: "",

@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const http = require("http");
-const initializeSocket = require("./socket.js");
+const { collaborationRooms, initializeSocket } = require("./socket.js");
 
 // import routes
 const Routes = require("./routes/index.js");
@@ -97,19 +97,33 @@ app.get("/api/collaboration/room/:roomId", (req, res) => {
 });
 
 // API Endpoint: Join a collaboration room
-app.post("/api/collaboration/join/:roomId", (req, res) => {
+app.post("/api/collaboration/join/:roomId", async (req, res) => {
   const roomId = req.params.roomId;
-  if (!collaborationRooms.has(roomId)) {
-    return res.status(404).json({ error: "Room not found" });
+  try {
+    const collaboration = await joinCollaborationRoom(roomId, req.user.id);
+
+    // Emit user joined event to all clients in the room
+    io.to(roomId).emit("userJoined", { userId: req.user.id });
+
+    return res.json({ message: "Joined the room successfully", collaboration });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to join the room" });
   }
+});
 
-  // Add the user to the room
-  collaborationRooms.get(roomId).users.add(req.user.id);
+// API Endpoint: Leave a collaboration room
+app.post("/api/collaboration/leave/:roomId", async (req, res) => {
+  const roomId = req.params.roomId;
+  try {
+    const collaboration = await leaveCollaborationRoom(roomId, req.user.id);
 
-  // Emit the updated room details to all clients in the room
-  io.to(roomId).emit("userJoined", { userId: req.user.id });
+    // Emit user left event to all clients in the room
+    io.to(roomId).emit("userLeft", { userId: req.user.id });
 
-  return res.json({ message: "Joined the room successfully" });
+    return res.json({ message: "Left the room successfully", collaboration });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to leave the room" });
+  }
 });
 
 // ... (Other routes and middleware)

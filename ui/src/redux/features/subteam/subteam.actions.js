@@ -4,27 +4,48 @@ import API from "../../api/api";
 // Async Thunk to create a new subteam
 export const createSubteam = createAsyncThunk(
   "subteam/create",
-  async (subteamData) => {
-    const response = await API.post("/subteam", subteamData);
-    return response.data;
+  async (subteamData, { rejectWithValue }) => {
+    try {
+      const { teamId, name, description } = subteamData;
+
+      const response = await API.post(`/team/subteams/${teamId}`, {
+        name,
+        description,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
   }
 );
 
 // Async Thunk to get all subteams for a specific team
 export const getAllSubteamsByTeam = createAsyncThunk(
   "subteam/getAllByTeam",
-  async (teamId) => {
-    const response = await API.get(`/${teamId}/subteams`);
-    return response.data;
+  async (teamId, { rejectWithValue }) => {
+    try {
+      const response = await API.get(`/team/subteams/${teamId}`);
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
   }
 );
 
 // Async Thunk to get a single subteam by ID
 export const getSubteamById = createAsyncThunk(
   "subteam/getById",
-  async (subteamId, teamId) => {
-    const response = await API.get(`/subteams/single/${subteamId}`);
-    return response.data;
+  async ({ teamId, subteamId }, { rejectWithValue }) => {
+    try {
+      console.log(teamId, subteamId);
+
+      const response = await API.get(`/team/subteams/${teamId}/${subteamId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
   }
 );
 
@@ -32,8 +53,11 @@ export const getSubteamById = createAsyncThunk(
 export const updateSubteamById = createAsyncThunk(
   "subteam/updateById",
   async (subteamData, teamId) => {
-    const { id, name, description } = subteamData;
-    const response = await API.put(`/subteams/${id}`, { name, description });
+    const { subteamId, name, description } = subteamData;
+    const response = await API.put(`/team/subteams/${teamId}/${subteamId}`, {
+      name,
+      description,
+    });
     return response.data;
   }
 );
@@ -41,8 +65,8 @@ export const updateSubteamById = createAsyncThunk(
 // Async Thunk to delete a subteam by ID
 export const deleteSubteamById = createAsyncThunk(
   "subteam/deleteById",
-  async (subteamId) => {
-    const response = await API.delete(`/subteams/${subteamId}`);
+  async ({ teamId, subteamId }) => {
+    const response = await API.delete(`/team/subteams/${teamId}/${subteamId}`);
     return response.data;
   }
 );

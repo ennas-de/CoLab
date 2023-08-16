@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import API from "../../api";
-import { getSubteamById } from "../../redux/subteam/subteam.actions";
+import API from "../../../redux/api/api";
+import { getSubteamById } from "../../../redux/features/subteam/subteam.actions";
 
 const AddMembersToSubteam = ({ subteamId, parentTeamId }) => {
   const dispatch = useDispatch();
@@ -38,9 +38,9 @@ const AddMembersToSubteam = ({ subteamId, parentTeamId }) => {
   };
 
   // Only allow members of the same parent team to add members to the subteam
-  if (userRole !== "tutor") {
-    return null;
-  }
+  // if (userRole !== "tutor") {
+  //   return null;
+  // }
 
   // Add any specific styles or classes for the AddMembersToSubteam component here
   // You can use Tailwind CSS classes or custom styles

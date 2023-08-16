@@ -3,20 +3,28 @@
 const Subteam = require("../models/subteam.model.js");
 
 // Create a new subteam
-const createSubteam = async (teamId, name, description) => {
+const createSubteam = async (req, res) => {
   try {
+    const { name, description } = req.body;
+    const teamId = req.params.teamId;
+
     const subteam = new Subteam({ team: teamId, name, description });
     const savedSubteam = await subteam.save();
-    return savedSubteam;
+
+    res.status(201).json(savedSubteam);
   } catch (error) {
-    throw new Error("Failed to create a new subteam.");
+    console.log(error.message);
+
+    res.status(500).json({ message: "Failed to create a new subteam." });
   }
 };
 
 // Get all subteams for a specific team
 const getAllSubteamsByTeam = async (req, res) => {
   try {
-    const teamId = req.params.id;
+    const teamId = req.params.teamId;
+    console.log(teamId);
+
     const subteams = await Subteam.find({ team: teamId });
     res.status(200).json(subteams);
   } catch (error) {
@@ -25,15 +33,17 @@ const getAllSubteamsByTeam = async (req, res) => {
 };
 
 // Get a single subteam by ID
-const getSubteamById = async (id) => {
+const getSubteamById = async (req, res) => {
   try {
-    const subteam = await Subteam.findById(id);
+    const { teamId, subteamId } = req.params;
+
+    const subteam = await Subteam.findById({ _id: subteamId, team: teamId });
     if (!subteam) {
-      throw new Error("Subteam not found.");
+      return res.status(404).json({ message: "Subteam not found." });
     }
-    return subteam;
+    return res.status(200).json(subteam);
   } catch (error) {
-    throw new Error("Failed to get the subteam.");
+    return res.status(404).json({ message: "Failed to get the subteam." });
   }
 };
 

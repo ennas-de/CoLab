@@ -61,6 +61,42 @@ const updateCollaborationById = async (id, content) => {
   }
 };
 
+// Join a collaboration room
+const joinCollaborationRoom = async (roomId, userId) => {
+  try {
+    const collaboration = await Collaboration.findById(roomId);
+    if (!collaboration) {
+      throw new Error("Collaboration not found.");
+    }
+
+    collaboration.users.push(userId);
+    await collaboration.save();
+
+    return collaboration;
+  } catch (error) {
+    throw new Error("Failed to join collaboration room.");
+  }
+};
+
+// Leave a collaboration room
+const leaveCollaborationRoom = async (roomId, userId) => {
+  try {
+    const collaboration = await Collaboration.findById(roomId);
+    if (!collaboration) {
+      throw new Error("Collaboration not found.");
+    }
+
+    collaboration.users = collaboration.users.filter(
+      (user) => user.toString() !== userId
+    );
+    await collaboration.save();
+
+    return collaboration;
+  } catch (error) {
+    throw new Error("Failed to leave collaboration room.");
+  }
+};
+
 // Delete a collaboration by ID
 const deleteCollaborationById = async (id) => {
   try {
@@ -79,5 +115,7 @@ module.exports = {
   getAllCollaborationsByTeamAndSubteam,
   getCollaborationById,
   updateCollaborationById,
+  joinCollaborationRoom,
+  leaveCollaborationRoom,
   deleteCollaborationById,
 };

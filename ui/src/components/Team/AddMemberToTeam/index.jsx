@@ -8,14 +8,14 @@ const AddMemberToTeam = () => {
   const dispatch = useDispatch();
   const subteams = useSelector((state) => state.subteam.subteams);
   const userRole = useSelector((state) => state.auth.user?.role); // Get the user's role from the authentication state
-  const { id } = useParams(); // Get the teamId from the URL params
-
-  console.log(id);
+  const params = useParams(); // Get the teamId from the URL params
+  const { teamId } = params;
+  console.log(params);
 
   useEffect(() => {
     // Fetch all subteams for the specified team when the component mounts
-    dispatch(getAllSubteamsByTeam(id));
-  }, [dispatch, id]);
+    dispatch(getAllSubteamsByTeam(teamId));
+  }, [dispatch, teamId]);
 
   // Check if the user is a tutor, if not, redirect to the home page
   // if (userRole !== "tutor") {
@@ -80,13 +80,13 @@ const AddMemberToTeam = () => {
         <div className="grid grid-cols-1 gap-4">
           {searchResults.map((user) => (
             <div
-              key={user._id}
+              key={user?._id}
               className="border rounded-lg p-4 shadow-md bg-white">
-              <h2 className="text-lg font-semibold mb-2">{user.username}</h2>
-              <p className="text-gray-600">{user.email}</p>
+              <h2 className="text-lg font-semibold mb-2">{user?.username}</h2>
+              <p className="text-gray-600">{user?.email}</p>
               <button
                 type="button"
-                onClick={() => handleAddUserToTeam(user._id)}
+                onClick={() => handleAddUserToTeam(user?._id)}
                 className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 mt-2">
                 Add to Team
               </button>

@@ -1,6 +1,6 @@
 // frontend/src/features/collaboration/components/CollaborationEditor.js
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Editor } from "react-live";
 import { selectUser } from "../../auth/authSlice";
@@ -9,13 +9,16 @@ import {
   getCollaborationById,
   updateCollaborationById,
 } from "../collaboration.slice";
-import socket from "../../socket"; // Import socket for real-time synchronization
+import { useSocket } from "../../contexts/SocketContext";
 
 const CollaborationEditor = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const [content, setContent] = useState("");
+
+  // Use the useSocket hook to get the socket instance
+  const socket = useSocket();
 
   useEffect(() => {
     if (collaborationId) {
@@ -38,7 +41,7 @@ const CollaborationEditor = () => {
         socket.emit("leaveRoom", { roomId: collaborationId });
       }
     };
-  }, [collaborationId, dispatch]);
+  }, [collaborationId, dispatch, socket]);
 
   const handleCodeChange = (newCode) => {
     setContent(newCode);
@@ -83,7 +86,7 @@ const CollaborationEditor = () => {
       <Editor
         value={content}
         onChange={handleCodeChange}
-        // You can add other editor configurations here
+        // Add other editor configurations here
         theme="vs-dark" // Example: Using a dark theme
       />
       <button onClick={handleSaveProgress}>

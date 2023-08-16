@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createCollaboration,
-  getAllCollaborations,
+  getAllCollaborationsByTeamAndSubteam,
   getCollaborationById,
   updateCollaborationById,
   deleteCollaborationById,
@@ -37,17 +37,23 @@ const collaborationSlice = createSlice({
         state.error = action.error.message;
       })
       // Get all collaborations for a specific team and subteam
-      .addCase(getAllCollaborations.pending, (state) => {
+      .addCase(getAllCollaborationsByTeamAndSubteam.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getAllCollaborations.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.collaborations = action.payload;
-      })
-      .addCase(getAllCollaborations.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
+      .addCase(
+        getAllCollaborationsByTeamAndSubteam.fulfilled,
+        (state, action) => {
+          state.status = "succeeded";
+          state.collaborations = action.payload;
+        }
+      )
+      .addCase(
+        getAllCollaborationsByTeamAndSubteam.rejected,
+        (state, action) => {
+          state.status = "failed";
+          state.error = action.error.message;
+        }
+      )
       // Get a single collaboration by ID
       .addCase(getCollaborationById.pending, (state) => {
         state.status = "loading";

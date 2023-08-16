@@ -9,17 +9,19 @@ import {
   getCollaborationById,
   updateCollaborationById,
   deleteCollaborationById,
-} from "../collaboration.slice";
-import { selectUser } from "../../auth/authSlice";
-import socket from "../../socket"; // Import socket for real-time synchronization
+} from "../../../../redux/features/collaboration/collaboration.actions";
+import { useSocket } from "../../../../contexts/SocketContext";
 
 const CollaborationEditorPage = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const user = useSelector((state) => state.user.user);
   const history = useHistory();
   const [content, setContent] = useState("");
   const [collaboration, setCollaboration] = useState(null);
+
+  // Use the useSocket hook to get the socket instance
+  const socket = useSocket();
 
   useEffect(() => {
     if (collaborationId) {
@@ -29,19 +31,13 @@ const CollaborationEditorPage = () => {
         .then((data) => {
           setContent(data.content);
           setCollaboration(data);
+          // Join the collaboration room using Socket.io
+          socket.emit("joinRoom", { roomId: data._id });
         })
         .catch((error) => {
           console.log("Failed to fetch collaboration:", error);
         });
     }
-  }, [collaborationId, dispatch]);
-
-  useEffect(() => {
-    // Join the collaboration room using Socket.io
-    if (collaboration) {
-      socket.emit("joinRoom", { roomId: collaboration._id });
-    }
-
     // Cleanup Socket.io listeners on unmount
     return () => {
       // Leave the collaboration room when the component unmounts
@@ -49,7 +45,7 @@ const CollaborationEditorPage = () => {
         socket.emit("leaveRoom", { roomId: collaboration._id });
       }
     };
-  }, [collaboration]);
+  }, [collaborationId, dispatch, socket]);
 
   const handleCodeChange = (newCode) => {
     setContent(newCode);
@@ -126,4 +122,12 @@ const CollaborationEditorPage = () => {
         {collaborationId ? "Save Progress" : "Create Collaboration"}
       </button>
       {collaborationId && (
-        <button onClick={handleDeleteCollaboration}>Delete Collaboration
+        <button onClick={handleDeleteCollaboration}>
+          Delete Collaboration
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default CollaborationEditorPage;

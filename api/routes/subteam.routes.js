@@ -13,22 +13,22 @@ const {
 
 // Route: POST /api/subteams
 // Description: Create a new subteam
-router.post("/", createSubteam);
-
-// Route: GET /api/subteams/:id
-// Description: Get a subteam by ID
-router.get("/:id", getSubteamById);
+router.post("/:teamId", createSubteam);
 
 // Route: GET /api/subteams
 // Description: Get all subteams
-router.get("/", getAllSubteamsByTeam);
+router.get("/:teamId", getAllSubteamsByTeam);
+
+// Route: GET /api/subteams/:id
+// Description: Get a subteam by ID
+router.get("/:teamId/:subteamId", getSubteamById);
 
 // Route: PUT /api/subteams/:id
 // Description: Update a subteam by ID
-router.put("/:id", updateSubteamById);
+router.put("/:teamId/:subteamId", updateSubteamById);
 
 // Route: DELETE /api/subteams/:id
 // Description: Delete a subteam by ID
-router.delete("/:id", deleteSubteamById);
+router.delete("/:teamId/:subteamId", deleteSubteamById);
 
 module.exports = router;

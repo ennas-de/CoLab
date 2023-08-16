@@ -4,36 +4,38 @@ import API from "../../api/api";
 
 // Async Thunk to create a new collaboration
 export const createCollaboration = createAsyncThunk(
-  "collaboration/create",
+  "collaboration/createCollaboration",
   async (collaborationData) => {
-    const response = await API.post("/collaboration", collaborationData);
+    const response = await API.post("/collaborations", collaborationData);
     return response.data;
   }
 );
 
 // Async Thunk to get all collaborations for a specific team and subteam
-export const getAllCollaborations = createAsyncThunk(
-  "collaboration/getAll",
+export const getAllCollaborationsByTeamAndSubteam = createAsyncThunk(
+  "collaboration/getAllCollaborations",
   async ({ teamId, subteamId }) => {
-    const response = await API.get(`/collaboration/${teamId}/${subteamId}`);
+    const response = await API.get(`/collaborations/${teamId}/${subteamId}`);
     return response.data;
   }
 );
 
 // Async Thunk to get a single collaboration by ID
 export const getCollaborationById = createAsyncThunk(
-  "collaboration/getById",
+  "collaboration/getCollaborationById",
   async (collaborationId) => {
-    const response = await API.get(`/collaboration/${collaborationId}`);
+    const response = await API.get(
+      `/collaborations/${teamId}/${subteamId}/${collaborationId}`
+    );
     return response.data;
   }
 );
 
 // Async Thunk to update a collaboration by ID
 export const updateCollaborationById = createAsyncThunk(
-  "collaboration/updateById",
+  "collaboration/updateCollaborationById",
   async ({ collaborationId, content }) => {
-    const response = await API.put(`/collaboration/${collaborationId}`, {
+    const response = await API.put(`/collaborations/${collaborationId}`, {
       content,
     });
     return response.data;
@@ -42,9 +44,9 @@ export const updateCollaborationById = createAsyncThunk(
 
 // Async Thunk to delete a collaboration by ID
 export const deleteCollaborationById = createAsyncThunk(
-  "collaboration/deleteById",
+  "collaboration/deleteCollaborationById",
   async (collaborationId) => {
-    const response = await API.delete(`/collaboration/${collaborationId}`);
+    const response = await API.delete(`/collaborations/${collaborationId}`);
     return response.data;
   }
 );
@@ -53,7 +55,7 @@ export const deleteCollaborationById = createAsyncThunk(
 export const joinCollaborationRoom = createAsyncThunk(
   "collaboration/joinRoom",
   async ({ roomId, userId }) => {
-    const response = await API.post(`/collaboration/${roomId}/join`, {
+    const response = await API.post(`/collaborations/${roomId}/join`, {
       userId,
     });
     return response.data;
@@ -64,7 +66,7 @@ export const joinCollaborationRoom = createAsyncThunk(
 export const leaveCollaborationRoom = createAsyncThunk(
   "collaboration/leaveRoom",
   async ({ roomId, userId }) => {
-    const response = await API.post(`/collaboration/${roomId}/leave`, {
+    const response = await API.post(`/collaborations/${roomId}/leave`, {
       userId,
     });
     return response.data;

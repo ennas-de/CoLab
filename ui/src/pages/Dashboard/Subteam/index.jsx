@@ -3,16 +3,18 @@ import { useSelector, useDispatch } from "react-redux";
 // import { useParams } from "react-router-dom";
 import { getAllSubteamsByTeam } from "../../../redux/features/subteam/subteam.actions";
 import SubteamDetail from "../../../components/Subteam/SubteamDetail";
+import { Link } from "react-router-dom";
 
 const SubteamList = ({ teamId }) => {
   const dispatch = useDispatch();
-  const subteams = useSelector((state) => state.subteam.subteams);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     // Fetch all subteams for the specified team when the component mounts
     dispatch(getAllSubteamsByTeam(teamId));
   }, [dispatch, teamId]);
+
+  const subteams = useSelector((state) => state.subteam.subteams);
 
   // Redirect to login page if user is not authenticated
   // if (!isAuthenticated) {
@@ -30,7 +32,12 @@ const SubteamList = ({ teamId }) => {
         <div className="grid grid-cols-1 gap-4">
           {subteams &&
             subteams.map((subteam) => (
-              <SubteamDetail key={subteam._id} subteam={subteam} />
+              <Link to={`/dashboard/teams/${teamId}/subteams/${subteam._id}`}>
+                <div>
+                  <h4>{subteam.name}</h4>
+                  <p>{subteam.description}</p>
+                </div>
+              </Link>
             ))}
         </div>
       )}
