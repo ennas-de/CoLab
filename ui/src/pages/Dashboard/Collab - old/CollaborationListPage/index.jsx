@@ -15,7 +15,9 @@ const CollaborationListPage = () => {
 
   const { teamId, subteamId } = params;
 
-  const user = "64d8df589748b875777bfeac";
+  const user = {
+    id: "64d8df589748b875777bfeac",
+  };
 
   // Additional functionalities for creating, joining, and leaving collaboration rooms
   const handleCreateCollaboration = (

@@ -32,7 +32,9 @@ const SubteamList = ({ teamId }) => {
         <div className="grid grid-cols-1 gap-4">
           {subteams &&
             subteams.map((subteam) => (
-              <Link to={`/dashboard/teams/${teamId}/subteams/${subteam._id}`}>
+              <Link
+                to={`/dashboard/teams/${teamId}/subteams/${subteam._id}`}
+                key={subteam._id}>
                 <div>
                   <h4>{subteam.name}</h4>
                   <p>{subteam.description}</p>

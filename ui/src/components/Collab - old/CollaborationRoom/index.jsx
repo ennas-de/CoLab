@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link } from "react-router-dom";
-import { Editor } from "react-codemirror2"; // Import collaborative editor library
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css"; // Import Codemirror styles
 import "codemirror/theme/material.css"; // Import Codemirror theme
 import {
@@ -15,7 +15,9 @@ const CollaborationRoom = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
   const socket = useSocket();
-  const user = "64d8df589748b875777bfeac";
+  console.log(socket);
+  const user = { id: "64d8df589748b875777bfeac" };
+  const userId = user.id;
   // const user = useSelector((state) => state.user.user);
   const [content, setContent] = useState("");
   const [editorCursor, setEditorCursor] = useState({});
@@ -121,7 +123,7 @@ const CollaborationRoom = () => {
       <h2>Collaboration Room</h2>
       <div>Users in the room: {usersInRoom.join(", ")}</div>
       <h3>Editor:</h3>
-      <Editor
+      <CodeMirror
         value={content}
         onBeforeChange={handleCodeChange}
         onChange={handleCursorActivity}

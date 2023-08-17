@@ -10,13 +10,13 @@ const TeamDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const team = useSelector((state) => state.team.selectedTeam);
-
   const teamId = params.teamId;
 
   useEffect(() => {
     dispatch(getTeamById(teamId));
   }, [teamId, dispatch]);
+
+  const team = useSelector((state) => state.team.selectedTeam);
 
   const handleOpenAddSubteam = () => {
     navigate(`/dashboard/teams/${teamId}/subteams/create`);
@@ -40,7 +40,7 @@ const TeamDetail = () => {
       <button onClick={handleOpenAddSubteam}>Add Subteam</button>
       <button onClick={handleOpenAddMemberToTeam}>Add Member</button>
       {/* Display a list of all subteams attached to this individual team */}
-      <SubteamList key={team?._id} teamId={team?._id} />
+      <SubteamList teamId={team?._id} />
     </div>
   );
 };

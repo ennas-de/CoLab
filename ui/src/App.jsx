@@ -15,12 +15,12 @@ import AddSubteam from "./components/Subteam/AddSubteam";
 import SubteamMembers from "./components/Subteam/SubteamMembers";
 import UpdateSubteam from "./components/Subteam/UpdateSubteam";
 import AddMembersToSubteam from "./components/Subteam/AddMembersToSubteam";
-import CollaborationList from "./pages/Dashboard/Collaboration/CollaborationListPage";
-import CollaborationDetailPage from "./pages/Dashboard/Collaboration/CollaborationDetailPage";
-import CollaborationEditorPage from "./pages/Dashboard/Collaboration/CollaborationListPage/index";
 import SubteamDetail from "./components/Subteam/SubteamDetail";
-import CollaborationRoom from "./components/Collaboration/CollaborationRoom/";
-import CollaborationListPage from "./pages/Dashboard/Collaboration/CollaborationListPage";
+// import CollaborationList from "./pages/Dashboard/Collaboration/CollaborationListPage";
+// import CollaborationDetailPage from "./pages/Dashboard/Collaboration/CollaborationDetailPage";
+// import CollaborationEditorPage from "./pages/Dashboard/Collaboration/CollaborationListPage/index";
+// import CollaborationRoom from "./components/Collaboration/CollaborationRoom/";
+// import CollaborationListPage from "./pages/Dashboard/Collaboration/CollaborationListPage";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -75,14 +75,18 @@ function App() {
         element={<AddMembersToSubteam />}
       />
       {/* Collaborations route */}
-      <Route
+      {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/"
         element={<CollaborationListPage />}
       />
       <Route
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/:collaborationId"
+        element={<CollaborationDetailPage />}
+      /> */}
+      {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/create"
         element={<CollaborationRoom />}
-      />
+      /> */}
       {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/:collaborationId"
         element={<CollaborationRoom />}

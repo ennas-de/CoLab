@@ -3,8 +3,11 @@
 const Collaboration = require("../models/collaboration.model");
 
 // Create a new collaboration
-const createCollaboration = async (teamId, subteamId, userId, content) => {
+const createCollaboration = async (req, res) => {
   try {
+    const { userId, content } = req.body;
+    const { teamId, subteamId } = req.params;
+
     const collaboration = new Collaboration({
       team: teamId,
       subteam: subteamId,
@@ -12,9 +15,9 @@ const createCollaboration = async (teamId, subteamId, userId, content) => {
       content,
     });
     const savedCollaboration = await collaboration.save();
-    return savedCollaboration;
+    res.status(201).json(savedCollaboration);
   } catch (error) {
-    throw new Error("Failed to create a new collaboration.");
+    res.status(500).json({ message: "Failed to create a new collaboration." });
   }
 };
 
@@ -25,9 +28,9 @@ const getAllCollaborationsByTeamAndSubteam = async (teamId, subteamId) => {
       team: teamId,
       subteam: subteamId,
     });
-    return collaborations;
+    res.status(201).json(collaborations);
   } catch (error) {
-    throw new Error("Failed to get collaborations.");
+    res.status(500).json({ message: "Failed to get collaborations." });
   }
 };
 
@@ -36,11 +39,11 @@ const getCollaborationById = async (id) => {
   try {
     const collaboration = await Collaboration.findById(id);
     if (!collaboration) {
-      throw new Error("Collaboration not found.");
+      return res.status(500).json({ message: "Collaboration not found." });
     }
-    return collaboration;
+    res.status(201).json(collaboration);
   } catch (error) {
-    throw new Error("Failed to get the collaboration.");
+    res.status(500).json({ message: "Failed to get the collaboration." });
   }
 };
 
@@ -53,11 +56,11 @@ const updateCollaborationById = async (id, content) => {
       { new: true }
     );
     if (!updatedCollaboration) {
-      throw new Error("Collaboration not found.");
+      return res.status(500).json({ message: "Collaboration not found." });
     }
-    return updatedCollaboration;
+    res.status(201).json(updatedCollaboration);
   } catch (error) {
-    throw new Error("Failed to update the collaboration.");
+    res.status(500).json({ message: "Failed to update the collaboration." });
   }
 };
 
@@ -66,15 +69,15 @@ const joinCollaborationRoom = async (roomId, userId) => {
   try {
     const collaboration = await Collaboration.findById(roomId);
     if (!collaboration) {
-      throw new Error("Collaboration not found.");
+      return res.status(500).json({ message: "Collaboration not found." });
     }
 
     collaboration.users.push(userId);
     await collaboration.save();
 
-    return collaboration;
+    res.status(201).json(collaboration);
   } catch (error) {
-    throw new Error("Failed to join collaboration room.");
+    res.status(500).json({ message: "Failed to join collaboration room." });
   }
 };
 
@@ -83,7 +86,7 @@ const leaveCollaborationRoom = async (roomId, userId) => {
   try {
     const collaboration = await Collaboration.findById(roomId);
     if (!collaboration) {
-      throw new Error("Collaboration not found.");
+      return res.status(500).json({ message: "Collaboration not found." });
     }
 
     collaboration.users = collaboration.users.filter(
@@ -91,9 +94,9 @@ const leaveCollaborationRoom = async (roomId, userId) => {
     );
     await collaboration.save();
 
-    return collaboration;
+    res.status(201).json(collaboration);
   } catch (error) {
-    throw new Error("Failed to leave collaboration room.");
+    res.status(500).json({ message: "Failed to leave collaboration room." });
   }
 };
 
@@ -102,11 +105,11 @@ const deleteCollaborationById = async (id) => {
   try {
     const deletedCollaboration = await Collaboration.findByIdAndRemove(id);
     if (!deletedCollaboration) {
-      throw new Error("Collaboration not found.");
+      res.status(500).json({ message: "Collaboration not found." });
     }
-    return deletedCollaboration;
+    res.status(201).json(deletedCollaboration);
   } catch (error) {
-    throw new Error("Failed to delete the collaboration.");
+    res.status(500).json({ message: "Failed to delete the collaboration." });
   }
 };
 

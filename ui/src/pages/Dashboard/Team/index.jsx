@@ -29,7 +29,7 @@ const TeamList = () => {
           {/* Display list of teams */}
           {teams.map((team) => (
             // console.log(team)
-            <Link to={`/dashboard/teams/${team._id}`}>
+            <Link to={`/dashboard/teams/${team._id}`} key={team._id}>
               <div
                 key={team._id}
                 className="border rounded-lg p-4 shadow-md bg-white">

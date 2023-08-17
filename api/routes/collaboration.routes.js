@@ -16,7 +16,7 @@ router.post("/:teamId/:subteamId", createCollaboration);
 
 // Route: GET /api/collaborations
 // Description: Get all collaborations
-router.get("/:teamId/:subteamId", getAllCollaborationsByTeamAndSubteam);
+router.get("/:teamId/:subteamId/", getAllCollaborationsByTeamAndSubteam);
 
 // Route: GET /api/collaborations/:id
 // Description: Get a collaboration by ID
