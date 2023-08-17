@@ -19,6 +19,8 @@ import CollaborationList from "./pages/Dashboard/Collaboration/CollaborationList
 import CollaborationDetailPage from "./pages/Dashboard/Collaboration/CollaborationDetailPage";
 import CollaborationEditorPage from "./pages/Dashboard/Collaboration/CollaborationListPage/index";
 import SubteamDetail from "./components/Subteam/SubteamDetail";
+import CollaborationRoom from "./components/Collaboration/CollaborationRoom/";
+import CollaborationListPage from "./pages/Dashboard/Collaboration/CollaborationListPage";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,17 +76,25 @@ function App() {
       />
       {/* Collaborations route */}
       <Route
-        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations"
-        element={<CollaborationList />}
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/"
+        element={<CollaborationListPage />}
       />
       <Route
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/create"
+        element={<CollaborationRoom />}
+      />
+      {/* <Route
+        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/:collaborationId"
+        element={<CollaborationRoom />}
+      /> */}
+      {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaboration/:collaborationId"
         element={<CollaborationDetailPage />}
-      />
-      <Route
+      /> */}
+      {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaboration/:collaborationId"
         element={<CollaborationEditorPage />}
-      />
+      /> */}
 
       {/* </Route> */}
 

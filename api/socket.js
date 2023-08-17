@@ -1,12 +1,12 @@
 // backend/socket.js
 const socketIO = require("socket.io");
 
+// Store active collaboration rooms and their users
+const collaborationRooms = new Map();
+
 // Function to initialize Socket.io and attach it to the server
 const initializeSocket = (server) => {
   const io = socketIO(server);
-
-  // Store active collaboration rooms and their users
-  const collaborationRooms = new Map();
 
   io.on("connection", (socket) => {
     console.log("A user connected!");
@@ -85,4 +85,7 @@ const initializeSocket = (server) => {
   return io;
 };
 
-module.exports = initializeSocket;
+module.exports = {
+  collaborationRooms,
+  initializeSocket,
+};

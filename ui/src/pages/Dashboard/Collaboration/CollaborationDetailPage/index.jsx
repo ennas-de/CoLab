@@ -1,7 +1,7 @@
-// frontend/src/pages/Dashboard/Collaboration/CollaborationDetailPage.js
 import React from "react";
 import { useParams } from "react-router-dom";
-import CollaborationDetail from "../../../../features/collaboration/components/CollaborationDetail"; // Import the CollaborationDetail component
+import { useDispatch } from "react-redux"; // Import useDispatch
+import CollaborationDetail from "../../../../components/Collaboration/CollaborationDetail";
 import {
   joinCollaborationRoom,
   leaveCollaborationRoom,
@@ -10,6 +10,7 @@ import {
 import { useSocket } from "../../../../contexts/SocketContext";
 
 const CollaborationDetailPage = () => {
+  const dispatch = useDispatch(); // Get the dispatch function
   const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const params = useParams();
 

@@ -1,22 +1,9 @@
-// frontend/src/features/collaboration/components/CollaborationRoom.js
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams, Link } from "react-router-dom";
-import { Editor } from "react-codemirror2"; // Import collaborative editor library
-import "codemirror/lib/codemirror.css"; // Import Codemirror styles
-import "codemirror/theme/material.css"; // Import Codemirror theme
-import {
-  getCollaborationById,
-  updateCollaborationById,
-} from "../../../redux/features/collaboration/collaboration.actions";
-import { useSocket } from "../../../contexts/SocketContext";
+// Import statements
 
 const CollaborationRoom = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
-  const socket = useSocket();
-  const user = "64d8df589748b875777bfeac";
-  // const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.auth.user);
   const [content, setContent] = useState("");
   const [editorCursor, setEditorCursor] = useState({});
   const [editorSelections, setEditorSelections] = useState([]);
@@ -123,31 +110,17 @@ const CollaborationRoom = () => {
       <h3>Editor:</h3>
       <Editor
         value={content}
-        onBeforeChange={handleCodeChange}
-        onChange={handleCursorActivity}
-        onSelection={handleSelectionUpdate}
+        onBeforeChange={(editor, data, newCode) =>
+          handleCodeChange(editor, data, newCode)
+        }
+        onCursor={(editor, data) => handleCursorActivity(editor)}
+        onSelection={(editor, data) => handleSelectionUpdate(editor)}
         options={{
           mode: "javascript", // Set your preferred language mode
           theme: "material",
         }}
       />
-      <div>
-        {Object.entries(editorCursor).map(([userId, cursorPosition]) => (
-          <div key={userId}>
-            User {userId}: Cursor at Line {cursorPosition.line}, Column{" "}
-            {cursorPosition.ch}
-          </div>
-        ))}
-      </div>
-      <div>
-        {Object.entries(editorSelections).map(([userId, selectionRange]) => (
-          <div key={userId}>
-            User {userId}: Selection from Line {selectionRange.anchor.line},
-            Column {selectionRange.anchor.ch} to Line {selectionRange.head.line}
-            , Column {selectionRange.head.ch}
-          </div>
-        ))}
-      </div>
+      {/* Rest of the component */}
     </div>
   );
 };

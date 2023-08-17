@@ -12,7 +12,7 @@ const initialState = {
   subteams: [],
   selectedSubteam: null,
   status: "idle",
-  error: null,
+  message: null,
 };
 
 const subteamSlice = createSlice({
@@ -31,7 +31,7 @@ const subteamSlice = createSlice({
       })
       .addCase(createSubteam.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get all subteams for a specific team
       .addCase(getAllSubteamsByTeam.pending, (state) => {
@@ -43,7 +43,7 @@ const subteamSlice = createSlice({
       })
       .addCase(getAllSubteamsByTeam.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get a single subteam by ID
       .addCase(getSubteamById.pending, (state) => {
@@ -55,7 +55,7 @@ const subteamSlice = createSlice({
       })
       .addCase(getSubteamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Update a subteam by ID
       .addCase(updateSubteamById.pending, (state) => {
@@ -69,7 +69,7 @@ const subteamSlice = createSlice({
       })
       .addCase(updateSubteamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Delete a subteam by ID
       .addCase(deleteSubteamById.pending, (state) => {
@@ -83,7 +83,7 @@ const subteamSlice = createSlice({
       })
       .addCase(deleteSubteamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       });
   },
 });

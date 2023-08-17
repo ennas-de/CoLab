@@ -13,7 +13,11 @@ router.use("/auth", authRoutes);
 // router.use("/profile", profileRoutes);
 router.use("/teams", authenticateToken, teamRoutes);
 router.use("/team/subteams", authenticateToken, subTeamRoutes);
-router.use("/team/collaborations", authenticateToken, collaborationRoutes);
+router.use(
+  "/team/subteams/collaborations",
+  authenticateToken,
+  collaborationRoutes
+);
 // app.use("/api", require("./routes/team.routes.js"));
 // app.use("/api", require("./routes/subteam.routes.js"));
 // app.use("/api", require("./routes/collaboration.routes.js"));

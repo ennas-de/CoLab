@@ -32,8 +32,6 @@ const TeamDetail = () => {
 
   const subteams = useSelector((state) => state.subteam.subteams);
 
-  console.log(subteams);
-
   return (
     <div className="border rounded-lg p-4 shadow-md bg-white">
       <h2 className="text-lg font-semibold mb-2">{team?.name}</h2>

@@ -12,7 +12,7 @@ const initialState = {
   teams: [],
   selectedTeam: null,
   status: "idle",
-  error: null,
+  message: null,
 };
 
 const teamSlice = createSlice({
@@ -31,7 +31,7 @@ const teamSlice = createSlice({
       })
       .addCase(createTeam.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get all teams
       .addCase(getAllTeams.pending, (state) => {
@@ -43,7 +43,7 @@ const teamSlice = createSlice({
       })
       .addCase(getAllTeams.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get a single team by ID
       .addCase(getTeamById.pending, (state) => {
@@ -55,7 +55,7 @@ const teamSlice = createSlice({
       })
       .addCase(getTeamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Update a team by ID
       .addCase(updateTeamById.pending, (state) => {
@@ -69,7 +69,7 @@ const teamSlice = createSlice({
       })
       .addCase(updateTeamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Delete a team by ID
       .addCase(deleteTeamById.pending, (state) => {
@@ -83,7 +83,7 @@ const teamSlice = createSlice({
       })
       .addCase(deleteTeamById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       });
   },
 });

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSubteamById } from "../../../redux/features/subteam/subteam.actions";
-import CollaborationList from "../../../pages/Dashboard/Collaboration/CollaborationListPage";
+// import CollaborationList from "../../../pages/Dashboard/Collaboration/CollaborationListPage";
 
 const SubteamDetail = () => {
   const dispatch = useDispatch();
@@ -15,10 +15,10 @@ const SubteamDetail = () => {
     dispatch(getSubteamById({ teamId, subteamId }));
   }, [dispatch, subteamId, teamId]);
 
-  const selectedSubteam = useSelector((state) => state.subteam.selectedSubteam);
-  const { members } = selectedSubteam;
-
-  console.log(members);
+  const selectedSubteam = useSelector(
+    (state) => state.subteam?.selectedSubteam
+  );
+  const members = selectedSubteam?.members;
 
   // Add any specific styles or classes for the Subteam component here
   // You can use Tailwind CSS classes or custom styles

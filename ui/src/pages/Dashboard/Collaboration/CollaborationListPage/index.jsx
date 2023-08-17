@@ -1,8 +1,8 @@
 // frontend/src/pages/Dashboard/Collaboration/CollaborationListPage.js
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSocket } from "../../../../contexts/SocketContext";
-import CollaborationList from "../../../../features/collaboration/components/CollaborationList"; // Import the CollaborationList component
+import CollaborationList from "../../../../components/Collaboration/CollaborationList";
 import {
   createCollaboration,
   joinCollaborationRoom,
@@ -12,6 +12,10 @@ import {
 const CollaborationListPage = () => {
   const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const params = useParams();
+
+  const { teamId, subteamId } = params;
+
+  const user = "64d8df589748b875777bfeac";
 
   // Additional functionalities for creating, joining, and leaving collaboration rooms
   const handleCreateCollaboration = (
@@ -68,11 +72,14 @@ const CollaborationListPage = () => {
   return (
     <div>
       <h2>Collaboration Rooms</h2>
+      <Link
+        to={`/dashboard/team/${teamId}/subteam/${subteamId}/collaborations/create`}>
+        Create new Collaboration
+      </Link>
       {/* Render the CollaborationList component and pass the additional functionalities */}
       <CollaborationList
         teamId={params.teamId}
         subteamId={params.subteamId}
-        socketServerUrl={socketServerUrl}
         onJoinCollaboration={handleJoinCollaborationRoom}
         onLeaveCollaboration={handleLeaveCollaborationRoom}
         onCreateCollaboration={handleCreateCollaboration}

@@ -25,7 +25,6 @@ export const getAllSubteamsByTeam = createAsyncThunk(
   async (teamId, { rejectWithValue }) => {
     try {
       const response = await API.get(`/team/subteams/${teamId}`);
-      console.log(response.data);
 
       return response.data;
     } catch (error) {
@@ -39,9 +38,8 @@ export const getSubteamById = createAsyncThunk(
   "subteam/getById",
   async ({ teamId, subteamId }, { rejectWithValue }) => {
     try {
-      console.log(teamId, subteamId);
-
       const response = await API.get(`/team/subteams/${teamId}/${subteamId}`);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

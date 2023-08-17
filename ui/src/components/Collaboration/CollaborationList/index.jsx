@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { useSocket } from "../../contexts/SocketContext"; // Import the useSocket hook
-import { getAllCollaborationsByTeamAndSubteam } from "../collaboration.slice";
+import { useSocket } from "./../../../contexts/SocketContext";
+import { getAllCollaborationsByTeamAndSubteam } from "../../../redux/features/collaboration/collaboration.actions";
 
-const CollaborationList = ({ teamId, subteamId, socketServerUrl }) => {
+const CollaborationList = ({ teamId, subteamId }) => {
+  //, socketServerUrl
   const dispatch = useDispatch();
   const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const [collaborations, setCollaborations] = useState([]);
@@ -24,16 +25,20 @@ const CollaborationList = ({ teamId, subteamId, socketServerUrl }) => {
 
   return (
     <div>
-      <ul>
-        {collaborations.map((collaboration) => (
-          <li key={collaboration._id}>
-            <Link
-              to={`/team/${teamId}/subteam/${subteamId}/collaboration/${collaboration._id}`}>
-              {collaboration.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {collaborations.length > 1 ? (
+        <ul>
+          {collaborations.map((collaboration) => (
+            <li key={collaboration._id}>
+              <Link
+                to={`/team/${teamId}/subteam/${subteamId}/collaboration/${collaboration._id}`}>
+                {collaboration.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No collaborations yet.</p>
+      )}
     </div>
   );
 };

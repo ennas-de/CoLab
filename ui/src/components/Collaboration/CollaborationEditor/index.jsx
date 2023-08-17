@@ -1,20 +1,19 @@
 // frontend/src/features/collaboration/components/CollaborationEditor.js
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Editor } from "react-live";
-import { selectUser } from "../../auth/authSlice";
 import {
   createCollaboration,
   getCollaborationById,
   updateCollaborationById,
-} from "../collaboration.slice";
+} from "../collaboration.slice"; // Update the path accordingly
 import { useSocket } from "../../contexts/SocketContext";
 
 const CollaborationEditor = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const user = useSelector((state) => state.user); // Update this line
   const [content, setContent] = useState("");
 
   // Use the useSocket hook to get the socket instance

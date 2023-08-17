@@ -15,7 +15,7 @@ const initialState = {
   collaborations: [],
   selectedCollaboration: null,
   status: "idle",
-  error: null,
+  message: null,
 };
 
 const collaborationSlice = createSlice({
@@ -34,7 +34,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(createCollaboration.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Get all collaborations for a specific team and subteam
       .addCase(getAllCollaborationsByTeamAndSubteam.pending, (state) => {
@@ -51,7 +51,7 @@ const collaborationSlice = createSlice({
         getAllCollaborationsByTeamAndSubteam.rejected,
         (state, action) => {
           state.status = "failed";
-          state.error = action.error.message;
+          state.message = action.payload;
         }
       )
       // Get a single collaboration by ID
@@ -64,7 +64,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(getCollaborationById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Update a collaboration by ID
       .addCase(updateCollaborationById.pending, (state) => {
@@ -80,7 +80,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(updateCollaborationById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Delete a collaboration by ID
       .addCase(deleteCollaborationById.pending, (state) => {
@@ -94,7 +94,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(deleteCollaborationById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
       // Join a collaboration room
       .addCase(joinCollaborationRoom.pending, (state) => {
@@ -117,7 +117,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(joinCollaborationRoom.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       })
 
       // Leave a collaboration room
@@ -141,7 +141,7 @@ const collaborationSlice = createSlice({
       })
       .addCase(leaveCollaborationRoom.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.message = action.payload;
       });
   },
 });

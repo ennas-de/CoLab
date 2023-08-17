@@ -1,19 +1,25 @@
 // frontend/src/features/collaboration/components/CollaborationDetail.js
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { saveAs } from "file-saver";
-// import CodeEditor from "./CodeEditor";
-import { useSocket } from "./../../../contexts/SocketContext";
 import {
   getCollaborationById,
   updateCollaborationById,
-} from "./../../../redux/features/collaboration/collaboration.actions";
+} from "../../../redux/features/collaboration/collaboration.actions";
+import CollaborationEditor from "./CollaborationEditor"; // Import the CollaborationEditor component
+import { useSocket } from "../../contexts/SocketContext";
 
-const CollaborationDetail = () => {
+const CollaborationDetail = ({
+  teamId,
+  subteamId,
+  collaborationId,
+  socketServerUrl,
+  onJoinCollaboration,
+  onLeaveCollaboration,
+  onDeleteCollaboration,
+}) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
-  const { teamId, subteamId, collaborationId } = useParams();
   const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const [collaboration, setCollaboration] = useState(null);
 
@@ -41,33 +47,20 @@ const CollaborationDetail = () => {
   }, [dispatch, collaborationId, socket]);
 
   const handleCodeUpdate = (newCode) => {
-    // Update the code in the collaboration and save it to the backend
-    if (collaboration) {
-      dispatch(
-        updateCollaborationById({
-          id: collaboration._id,
-          content: newCode,
-        })
-      )
-        .unwrap()
-        .then((data) => {
-          console.log("Collaboration updated successfully.");
-        })
-        .catch((error) => {
-          console.log("Failed to update collaboration:", error);
-        });
-
-      // Emit the code update to the server for real-time synchronization
-      socket.emit("codeUpdate", { roomId: collaboration._id, code: newCode });
-    }
+    // Emit the code update to the server for real-time synchronization
+    socket.emit("codeUpdate", { roomId: collaborationId, code: newCode });
   };
 
   const handleSaveCode = () => {
-    // Save the code to local storage for later retrieval
-    if (collaboration) {
-      localStorage.setItem("savedCode", collaboration.content);
-      console.log("Code saved!");
-    }
+    // Update the existing collaboration content
+    dispatch(updateCollaborationById({ id: collaborationId, content }))
+      .unwrap()
+      .then(() => {
+        console.log("Collaboration updated successfully.");
+      })
+      .catch((error) => {
+        console.log("Failed to update collaboration:", error);
+      });
   };
 
   const handleDownloadCode = () => {
@@ -85,12 +78,26 @@ const CollaborationDetail = () => {
       {collaboration ? (
         <>
           <h2>{collaboration.name}</h2>
-          {/* <CodeEditor
-            code={collaboration.content}
+          <CollaborationEditor
+            content={collaboration.content}
             onCodeUpdate={handleCodeUpdate}
-          /> */}
+          />
           <button onClick={handleSaveCode}>Save Code</button>
           <button onClick={handleDownloadCode}>Download Code</button>
+          {!collaboration.users.has(user.id) ? (
+            <button
+              onClick={() => onJoinCollaboration(collaborationId, user.id)}>
+              Join Room
+            </button>
+          ) : (
+            <button
+              onClick={() => onLeaveCollaboration(collaborationId, user.id)}>
+              Leave Room
+            </button>
+          )}
+          <button onClick={() => onDeleteCollaboration(collaborationId)}>
+            Delete Collaboration
+          </button>
         </>
       ) : (
         <p>Loading collaboration details...</p>

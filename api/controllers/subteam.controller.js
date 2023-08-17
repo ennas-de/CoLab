@@ -23,7 +23,6 @@ const createSubteam = async (req, res) => {
 const getAllSubteamsByTeam = async (req, res) => {
   try {
     const teamId = req.params.teamId;
-    console.log(teamId);
 
     const subteams = await Subteam.find({ team: teamId });
     res.status(200).json(subteams);
@@ -35,6 +34,8 @@ const getAllSubteamsByTeam = async (req, res) => {
 // Get a single subteam by ID
 const getSubteamById = async (req, res) => {
   try {
+    console.log(req.params);
+
     const { teamId, subteamId } = req.params;
 
     const subteam = await Subteam.findById({ _id: subteamId, team: teamId });
@@ -43,6 +44,8 @@ const getSubteamById = async (req, res) => {
     }
     return res.status(200).json(subteam);
   } catch (error) {
+    console.log(error.message);
+
     return res.status(404).json({ message: "Failed to get the subteam." });
   }
 };
