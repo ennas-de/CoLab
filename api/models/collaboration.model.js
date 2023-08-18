@@ -12,6 +12,11 @@ const collaborationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subteam",
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,

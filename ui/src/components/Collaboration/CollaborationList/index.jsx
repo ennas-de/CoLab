@@ -2,24 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { useSocket } from "./../../../contexts/SocketContext";
-import { useSocketServerUrl } from "./../../../contexts/SocketServerUrlContext";
+// import { useSocket } from "./../../../contexts/SocketContext";
+// import { useSocketServerUrl } from "./../../../contexts/SocketServerUrlContext";
 import { getAllCollaborationsByTeamAndSubteam } from "../../../redux/features/collaboration/collaboration.actions";
 
-const CollaborationList = ({
-  teamId,
-  subteamId,
-  onJoinCollaboration,
-  onLeaveCollaboration,
-  onCreateCollaboration,
-}) => {
+const CollaborationList = ({ teamId, subteamId }) => {
   //,
   const dispatch = useDispatch();
-  const socket = useSocket(); // Use the useSocket hook to get the socket instance
-  const socketServerUrl = useSocketServerUrl();
+  // const socket = useSocket(); // Use the useSocket hook to get the socket instance
+  // const socketServerUrl = useSocketServerUrl();
   const [collaborations, setCollaborations] = useState([]);
 
-  console.log("socketServerUrl -", socketServerUrl);
+  // console.log("socketServerUrl -", socketServerUrl);
 
   useEffect(() => {
     // Fetch all collaborations for the current team and subteam

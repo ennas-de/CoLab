@@ -9,13 +9,13 @@ import {
   getCollaborationById,
   updateCollaborationById,
 } from "../../../redux/features/collaboration/collaboration.actions";
-import { useSocket } from "../../../contexts/SocketContext";
+// import { useSocket } from "../../../contexts/SocketContext";
 
 const CollaborationRoom = () => {
   const { teamId, subteamId, collaborationId } = useParams();
   const dispatch = useDispatch();
-  const socket = useSocket();
-  console.log(socket);
+  // const socket = useSocket();
+  // console.log(socket);
   // const user = useSelector((state) => state.user.user);
   const user = { id: "64d8df589748b875777bfeac" };
   const userId = user.id;
@@ -85,10 +85,17 @@ const CollaborationRoom = () => {
   // }, []);
 
   const handleCodeChange = (editor, data, newCode) => {
-    // Emit the code update to the server for real-time synchronization
-    socket.emit("codeUpdate", { roomId: collaborationId, code: newCode });
+    // // Emit the code update to the server for real-time synchronization
+    // socket.emit("codeUpdate", { roomId: collaborationId, code: newCode });
     // Update the existing collaboration content
-    dispatch(updateCollaborationById({ id: collaborationId, content: newCode }))
+    dispatch(
+      updateCollaborationById({
+        teamId,
+        subteamId,
+        collaborationId,
+        content: newCode,
+      })
+    )
       .unwrap()
       .then(() => {
         console.log("Collaboration updated successfully.");
@@ -100,22 +107,23 @@ const CollaborationRoom = () => {
 
   const handleCursorActivity = (editor) => {
     const cursorPosition = editor.getCursor();
-    // Emit cursor position update to the server
-    socket.emit("editorCursorUpdate", {
-      roomId: collaborationId,
-      userId: user.id,
-      cursorPosition,
-    });
+    // // Emit cursor position update to the server
+    // socket.emit("editorCursorUpdate", {
+    //   roomId: collaborationId,
+    //   userId: user.id,
+    //   cursorPosition,
+    // });
   };
 
   const handleSelectionUpdate = (editor) => {
     const selection = editor.getSelection();
-    // Emit selection range update to the server
-    socket.emit("editorSelectionsUpdate", {
-      roomId: collaborationId,
-      userId: user.id,
-      selectionRange: selection,
-    });
+    setContent(selection);
+    // // Emit selection range update to the server
+    // socket.emit("editorSelectionsUpdate", {
+    //   roomId: collaborationId,
+    //   userId: user.id,
+    //   selectionRange: selection,
+    // });
   };
 
   return (

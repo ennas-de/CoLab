@@ -7,6 +7,8 @@ export const createCollaboration = createAsyncThunk(
   "collaboration/createCollaboration",
   async ({ teamId, subteamId, userId, content }, { rejectWithValue }) => {
     try {
+      console.log(teamId, subteamId, userId, content);
+
       const response = await API.post(
         `/team/subteams/collaborations/${teamId}/${subteamId}`,
         { userId, content }

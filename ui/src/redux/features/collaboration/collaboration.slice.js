@@ -24,7 +24,6 @@ const collaborationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Create a new collaboration
       .addCase(createCollaboration.pending, (state) => {
         state.status = "loading";
       })
@@ -33,10 +32,11 @@ const collaborationSlice = createSlice({
         state.collaborations.push(action.payload);
       })
       .addCase(createCollaboration.rejected, (state, action) => {
+        console.log(action);
+
         state.status = "failed";
         state.message = action.payload;
       })
-      // Get all collaborations for a specific team and subteam
       .addCase(getAllCollaborationsByTeamAndSubteam.pending, (state) => {
         state.status = "loading";
       })
@@ -54,7 +54,6 @@ const collaborationSlice = createSlice({
           state.message = action.payload;
         }
       )
-      // Get a single collaboration by ID
       .addCase(getCollaborationById.pending, (state) => {
         state.status = "loading";
       })
@@ -66,7 +65,6 @@ const collaborationSlice = createSlice({
         state.status = "failed";
         state.message = action.payload;
       })
-      // Update a collaboration by ID
       .addCase(updateCollaborationById.pending, (state) => {
         state.status = "loading";
       })
@@ -82,7 +80,6 @@ const collaborationSlice = createSlice({
         state.status = "failed";
         state.message = action.payload;
       })
-      // Delete a collaboration by ID
       .addCase(deleteCollaborationById.pending, (state) => {
         state.status = "loading";
       })
@@ -96,7 +93,6 @@ const collaborationSlice = createSlice({
         state.status = "failed";
         state.message = action.payload;
       })
-      // Join a collaboration room
       .addCase(joinCollaborationRoom.pending, (state) => {
         state.status = "loading";
       })
@@ -105,13 +101,11 @@ const collaborationSlice = createSlice({
         const roomId = action.payload.roomId;
         const userId = action.payload.userId;
 
-        // Find the collaboration in state.collaborations by roomId
         const collaboration = state.collaborations.find(
           (collab) => collab._id === roomId
         );
 
         if (collaboration) {
-          // Add the user ID to the collaboration's users set
           collaboration.users.add(userId);
         }
       })
@@ -120,7 +114,6 @@ const collaborationSlice = createSlice({
         state.message = action.payload;
       })
 
-      // Leave a collaboration room
       .addCase(leaveCollaborationRoom.pending, (state) => {
         state.status = "loading";
       })
@@ -129,13 +122,11 @@ const collaborationSlice = createSlice({
         const roomId = action.payload.roomId;
         const userId = action.payload.userId;
 
-        // Find the collaboration in state.collaborations by roomId
         const collaboration = state.collaborations.find(
           (collab) => collab._id === roomId
         );
 
         if (collaboration) {
-          // Remove the user ID from the collaboration's users set
           collaboration.users.delete(userId);
         }
       })

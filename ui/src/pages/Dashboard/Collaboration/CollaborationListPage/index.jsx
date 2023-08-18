@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useSocket } from "../../../../contexts/SocketContext";
+// import { useSocket } from "../../../../contexts/SocketContext";
 import CollaborationList from "../../../../components/Collaboration/CollaborationList";
 import {
   createCollaboration,
@@ -9,7 +9,7 @@ import {
 } from "../../../../redux/features/collaboration/collaboration.actions";
 
 const CollaborationListPage = () => {
-  const socket = useSocket(); // Use the useSocket hook to get the socket instance
+  // const socket = useSocket(); // Use the useSocket hook to get the socket instance
   const params = useParams();
 
   const { teamId, subteamId } = params;
@@ -86,9 +86,9 @@ const CollaborationListPage = () => {
         teamId={params.teamId}
         subteamId={params.subteamId}
         // socketServerUrl={socketServerUrl}
-        onJoinCollaboration={handleJoinCollaborationRoom}
-        onLeaveCollaboration={handleLeaveCollaborationRoom}
-        onCreateCollaboration={handleCreateCollaboration}
+        // onJoinCollaboration={handleJoinCollaborationRoom}
+        // onLeaveCollaboration={handleLeaveCollaborationRoom}
+        // onCreateCollaboration={handleCreateCollaboration}
       />
     </div>
   );

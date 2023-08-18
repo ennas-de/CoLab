@@ -57,13 +57,19 @@ const getCollaborationById = async (req, res) => {
 const updateCollaborationById = async (req, res) => {
   const { collaborationId } = req.params;
   try {
+    console.log(req.body);
+
     const { content } = req.body;
+    console.log("content -", content);
 
     const updatedCollaboration = await Collaboration.findByIdAndUpdate(
       collaborationId,
-      { content },
+      { code: content },
       { new: true }
     );
+
+    console.log(updatedCollaboration);
+
     if (!updatedCollaboration) {
       return res.status(404).json({ message: "Collaboration not found." });
     }

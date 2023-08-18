@@ -4,27 +4,20 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const { Server } = require("socket.io");
 const http = require("http");
-const { collaborationRooms, initializeSocket } = require("./socket.js");
+require("dotenv").config();
 
 // import routes
 const Routes = require("./routes/index.js");
 
-// import socket related controller functions
-const {
-  createCollaboration,
-  joinCollaborationRoom,
-} = require("./controllers/collaboration.controller.js");
-// const {
-// createCollaboration
-//   joinCollaborationRoom,
-//   leaveCollaborationRoom,
-// } = require("./path/to/collaboration.controller.js");
-
 // Create Express app
 const app = express();
+// const server = http.createServer(app);
+
+// Setup socket
 const server = http.createServer(app);
+const io = new Server(server);
 
 // Middlewares
 app.use(express.json());
@@ -50,164 +43,59 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
 
-// Initialize Socket.io and attach it to the server
-const io = initializeSocket(server);
-
-// Add socket.io middleware or configurations here if needed
-// ...
-
-// Handle socket events here
-// Function to generate a random collaboration room ID
-const generateRoomId = () => {
-  return Math.random().toString(36).substring(7);
+// Socket Implementation
+const userSocketMap = {};
+const getAllConnectedCLients = (roomId) => {
+  // Map
+  return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
+    (socketId) => {
+      return {
+        socketId,
+        username: userSocketMap[socketId],
+      };
+    }
+  );
 };
 
-// API Endpoint: Create a new collaboration room
-app.post("/api/collaboration/create", async (req, res) => {
-  try {
-    // Assuming authentication and authorization middleware is already in place
-    // Check if the user is a tutor or has the required role to create a collaboration room
-    if (req.user.role !== "tutor") {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
+io.on("connection", (socket) => {
+  console.log("sockect connected", socket.id);
 
-    // Call the createCollaboration function to save the collaboration in the database
-    const savedCollaboration = await createCollaboration(req.params, req.body);
+  socket.on("join", ({ roomId, username }) => {
+    userSocketMap[socket.id] = username;
+    socket.join(roomId);
 
-    // Generate a new room ID
-    const roomId = generateRoomId();
+    const clients = getAllConnectedCLients(roomId);
+    clients.forEach(({ socketId }) => {
+      io.to(socketId).emit("joined", {
+        clients,
+        username,
+        socketId: socket.id,
+      });
+    });
+  });
 
-    // Create the new room and add the tutor as the first user
-    collaborationRooms.set(roomId, {
-      name: savedCollaboration.name,
-      users: new Set([req.user.id]),
-      code: "", // Optional: You can add a code field to store the code content
+  socket.on("code-change", ({ roomId, code }) => {
+    socket.in(roomId).emit("code-change", { code });
+  });
+
+  socket.on("sync-code", ({ socketId, code }) => {
+    io.to(socketId).emit("code-change", { code });
+  });
+
+  socket.on("disconnecting", () => {
+    const rooms = [...socket.rooms];
+    rooms.forEach((roomId) => {
+      socket.in(roomId).emit("disconnected", {
+        socketId: socket.id,
+        username: userSocketMap[socket.id],
+      });
     });
 
-    // Emit the new room details to all clients
-    io.emit("newRoom", { roomId, name: savedCollaboration.name });
-
-    return res.status(201).json({ roomId, name: savedCollaboration.name });
-  } catch (error) {
-    console.log(error.message);
-    return res
-      .status(500)
-      .json({ error: "Failed to create a new collaboration." });
-  }
-});
-
-// app.post("/api/collaboration/create", (req, res) => {
-//   // Assuming authentication and authorization middleware is already in place
-//   // Check if the user is a tutor or has the required role to create a collaboration room
-//   if (req.user.role !== "tutor") {
-//     return res.status(403).json({ error: "Unauthorized" });
-//   }
-
-//   // Generate a new room ID
-//   const roomId = generateRoomId();
-
-//   // Create the new room and add the tutor as the first user
-//   collaborationRooms.set(roomId, {
-//     name: req.body.name,
-//     users: new Set([req.user.id]),
-//     code: "", // Optional: You can add a code field to store the code content
-//   });
-
-//   // Emit the new room details to all clients
-//   io.emit("newRoom", { roomId, name: req.body.name });
-
-//   return res.status(201).json({ roomId, name: req.body.name });
-// });
-
-// API Endpoint: Get a list of all collaboration rooms
-app.get("/api/collaboration/rooms", (req, res) => {
-  // Return the list of room IDs and names
-  const rooms = Array.from(collaborationRooms.keys()).map((roomId) => ({
-    roomId,
-    name: collaborationRooms.get(roomId).name,
-  }));
-  return res.json(rooms);
-});
-
-// API Endpoint: Get detailed information about a collaboration room
-app.get("/api/collaboration/room/:roomId", (req, res) => {
-  const roomId = req.params.roomId;
-  if (!collaborationRooms.has(roomId)) {
-    return res.status(404).json({ error: "Room not found" });
-  }
-
-  const room = collaborationRooms.get(roomId);
-  return res.json(room);
-});
-
-// API Endpoint: Join a collaboration room
-app.post("/api/collaboration/join/:roomId", async (req, res) => {
-  const roomId = req.params.roomId;
-  try {
-    const collaboration = await joinCollaborationRoom(
-      req.params.teamId,
-      req.params.subteamId,
-      req.params.collaborationId,
-      roomId,
-      req.user.id
-    );
-
-    // Emit user joined event to all clients in the room
-    io.to(roomId).emit("userJoined", { userId: req.user.id });
-
-    return res.json({ message: "Joined the room successfully", collaboration });
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to join the room" });
-  }
-});
-
-// API Endpoint: Leave a collaboration room
-app.post("/api/collaboration/leave/:roomId", async (req, res) => {
-  const roomId = req.params.roomId;
-  try {
-    const collaboration = await leaveCollaborationRoom(
-      req.params.teamId,
-      req.params.subteamId,
-      req.params.collaborationId,
-      roomId,
-      req.user.id
-    );
-
-    // Emit user left event to all clients in the room
-    io.to(roomId).emit("userLeft", { userId: req.user.id });
-
-    return res.json({ message: "Left the room successfully", collaboration });
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to leave the room" });
-  }
-});
-
-// ... (Other routes and middleware)
-
-// Function to handle real-time code updates in a collaboration room
-const handleCodeUpdate = (roomId, code) => {
-  if (!collaborationRooms.has(roomId)) {
-    return;
-  }
-
-  // Update the code in the room
-  collaborationRooms.get(roomId).code = code;
-
-  // Emit the updated code to all clients in the room except the sender
-  socket.to(roomId).emit("codeUpdated", { code });
-};
-
-// Socket.io event: User updates the code in a collaboration room
-io.on("connection", (socket) => {
-  // Listen for code updates from clients
-  socket.on("codeUpdate", ({ roomId, code }) => {
-    handleCodeUpdate(roomId, code);
+    delete userSocketMap[socket.id];
+    socket.leave();
   });
 
-  // Join the user to a specific room when they connect
-  socket.on("joinRoom", ({ roomId }) => {
-    socket.join(roomId);
-  });
+  // socket implementation end
 });
 
 // Routes

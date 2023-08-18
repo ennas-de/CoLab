@@ -17,16 +17,40 @@ const AddCollaborationForm = () => {
     _id: "64d8df589748b875777bfeac",
   };
   const userId = user._id;
+  const content = { name, description };
 
-  const handleSubmit = (e) => {
+  // Additional functionalities for creating, joining, and leaving collaboration rooms
+  const handleCreateCollaboration = (e) => {
     e.preventDefault();
-    const content = { name, description };
-    dispatch(createCollaboration({ teamId, subteamId, userId, content }));
-    console.log("creating new collaboration...");
+    // Create a new collaboration room
+    dispatch(
+      createCollaboration({
+        teamId,
+        subteamId,
+        userId,
+        content,
+      })
+    )
+      .unwrap()
+      .then((data) => {
+        console.log("Collaboration created successfully.");
+        // // Emit the new collaboration details to all clients using Socket.io
+        // socket.emit("newRoom", { roomId: data._id, name: data.name });
+      })
+      .catch((error) => {
+        console.log("Failed to create collaboration:", error);
+      });
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const content = { name, description };
+  //   dispatch(createCollaboration({ teamId, subteamId, userId, content }));
+  //   console.log("creating new collaboration...");
+  // };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleCreateCollaboration}>
       <label>Name:</label>
       <input
         type="text"
