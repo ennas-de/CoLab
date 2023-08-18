@@ -12,10 +12,6 @@ const { collaborationRooms, initializeSocket } = require("./socket.js");
 const Routes = require("./routes/index.js");
 
 // import socket related controller functions
-const {
-  createCollaboration,
-  joinCollaborationRoom,
-} = require("./controllers/collaboration.controller.js");
 // const {
 // createCollaboration
 //   joinCollaborationRoom,
@@ -63,61 +59,28 @@ const generateRoomId = () => {
 };
 
 // API Endpoint: Create a new collaboration room
-app.post("/api/collaboration/create", async (req, res) => {
-  try {
-    // Assuming authentication and authorization middleware is already in place
-    // Check if the user is a tutor or has the required role to create a collaboration room
-    if (req.user.role !== "tutor") {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
-
-    // Call the createCollaboration function to save the collaboration in the database
-    const savedCollaboration = await createCollaboration(req.params, req.body);
-
-    // Generate a new room ID
-    const roomId = generateRoomId();
-
-    // Create the new room and add the tutor as the first user
-    collaborationRooms.set(roomId, {
-      name: savedCollaboration.name,
-      users: new Set([req.user.id]),
-      code: "", // Optional: You can add a code field to store the code content
-    });
-
-    // Emit the new room details to all clients
-    io.emit("newRoom", { roomId, name: savedCollaboration.name });
-
-    return res.status(201).json({ roomId, name: savedCollaboration.name });
-  } catch (error) {
-    console.log(error.message);
-    return res
-      .status(500)
-      .json({ error: "Failed to create a new collaboration." });
+app.post("/api/collaboration/create", (req, res) => {
+  // Assuming authentication and authorization middleware is already in place
+  // Check if the user is a tutor or has the required role to create a collaboration room
+  if (req.user.role !== "tutor") {
+    return res.status(403).json({ error: "Unauthorized" });
   }
+
+  // Generate a new room ID
+  const roomId = generateRoomId();
+
+  // Create the new room and add the tutor as the first user
+  collaborationRooms.set(roomId, {
+    name: req.body.name,
+    users: new Set([req.user.id]),
+    code: "", // Optional: You can add a code field to store the code content
+  });
+
+  // Emit the new room details to all clients
+  io.emit("newRoom", { roomId, name: req.body.name });
+
+  return res.status(201).json({ roomId, name: req.body.name });
 });
-
-// app.post("/api/collaboration/create", (req, res) => {
-//   // Assuming authentication and authorization middleware is already in place
-//   // Check if the user is a tutor or has the required role to create a collaboration room
-//   if (req.user.role !== "tutor") {
-//     return res.status(403).json({ error: "Unauthorized" });
-//   }
-
-//   // Generate a new room ID
-//   const roomId = generateRoomId();
-
-//   // Create the new room and add the tutor as the first user
-//   collaborationRooms.set(roomId, {
-//     name: req.body.name,
-//     users: new Set([req.user.id]),
-//     code: "", // Optional: You can add a code field to store the code content
-//   });
-
-//   // Emit the new room details to all clients
-//   io.emit("newRoom", { roomId, name: req.body.name });
-
-//   return res.status(201).json({ roomId, name: req.body.name });
-// });
 
 // API Endpoint: Get a list of all collaboration rooms
 app.get("/api/collaboration/rooms", (req, res) => {
@@ -144,13 +107,7 @@ app.get("/api/collaboration/room/:roomId", (req, res) => {
 app.post("/api/collaboration/join/:roomId", async (req, res) => {
   const roomId = req.params.roomId;
   try {
-    const collaboration = await joinCollaborationRoom(
-      req.params.teamId,
-      req.params.subteamId,
-      req.params.collaborationId,
-      roomId,
-      req.user.id
-    );
+    const collaboration = await joinCollaborationRoom(roomId, req.user.id);
 
     // Emit user joined event to all clients in the room
     io.to(roomId).emit("userJoined", { userId: req.user.id });
@@ -165,13 +122,7 @@ app.post("/api/collaboration/join/:roomId", async (req, res) => {
 app.post("/api/collaboration/leave/:roomId", async (req, res) => {
   const roomId = req.params.roomId;
   try {
-    const collaboration = await leaveCollaborationRoom(
-      req.params.teamId,
-      req.params.subteamId,
-      req.params.collaborationId,
-      roomId,
-      req.user.id
-    );
+    const collaboration = await leaveCollaborationRoom(roomId, req.user.id);
 
     // Emit user left event to all clients in the room
     io.to(roomId).emit("userLeft", { userId: req.user.id });

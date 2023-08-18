@@ -1,4 +1,3 @@
-// frontend/src/pages/Dashboard/Collaboration/CollaborationListPage.jsaa
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSocket } from "../../../../contexts/SocketContext";
@@ -53,6 +52,8 @@ const CollaborationListPage = () => {
       .unwrap()
       .then(() => {
         console.log("Joined collaboration room successfully.");
+        // Emit user joined event to the Socket.io room
+        socket.emit("joinRoom", { roomId });
       })
       .catch((error) => {
         console.log("Failed to join collaboration room:", error);
@@ -65,6 +66,8 @@ const CollaborationListPage = () => {
       .unwrap()
       .then(() => {
         console.log("Left collaboration room successfully.");
+        // Emit user left event to the Socket.io room
+        socket.emit("leaveRoom", { roomId });
       })
       .catch((error) => {
         console.log("Failed to leave collaboration room:", error);
@@ -75,13 +78,14 @@ const CollaborationListPage = () => {
     <div>
       <h2>Collaboration Rooms</h2>
       <Link
-        to={`/dashboard/team/${teamId}/subteam/${subteamId}/collaborations/create`}>
+        to={`/dashboard/teams/${teamId}/subteams/${subteamId}/collaborations/create`}>
         Create new Collaboration
       </Link>
       {/* Render the CollaborationList component and pass the additional functionalities */}
       <CollaborationList
         teamId={params.teamId}
         subteamId={params.subteamId}
+        // socketServerUrl={socketServerUrl}
         onJoinCollaboration={handleJoinCollaborationRoom}
         onLeaveCollaboration={handleLeaveCollaborationRoom}
         onCreateCollaboration={handleCreateCollaboration}

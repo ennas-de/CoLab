@@ -1,15 +1,22 @@
 // backend/controllers/subteam.controller.js
 
 const Subteam = require("../models/subteam.model.js");
+const Team = require("../models/team.model.js");
 
 // Create a new subteam
 const createSubteam = async (req, res) => {
   try {
     const { name, description } = req.body;
     const teamId = req.params.teamId;
+    const team = await Team.findOne({ _id: teamId });
 
     const subteam = new Subteam({ team: teamId, name, description });
     const savedSubteam = await subteam.save();
+
+    if (savedSubteam)
+      await team({
+        subteams: savedSubteam._id,
+      });
 
     res.status(201).json(savedSubteam);
   } catch (error) {
@@ -34,8 +41,6 @@ const getAllSubteamsByTeam = async (req, res) => {
 // Get a single subteam by ID
 const getSubteamById = async (req, res) => {
   try {
-    console.log(req.params);
-
     const { teamId, subteamId } = req.params;
 
     const subteam = await Subteam.findById({ _id: subteamId, team: teamId });

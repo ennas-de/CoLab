@@ -36,7 +36,7 @@ const SubteamDetail = () => {
           </Link>
           <div>
             <Link
-              to={`/dashboard/team/${teamId}/subteam/${subteamId}/collaborations`}>
+              to={`/dashboard/teams/${teamId}/subteams/${subteamId}/collaborations`}>
               Collaborations
             </Link>
           </div>

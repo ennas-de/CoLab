@@ -39,13 +39,6 @@ const SubteamList = ({ teamId }) => {
                   <h4>{subteam.name}</h4>
                   <p>{subteam.description}</p>
                 </div>
-                {/* <SubteamDetail
-                  subteamId={subteam._id}
-                  description={subteam.description}
-                  members={subteam.members}
-                  name={subteam.name}
-                  teamId={subteam.team}
-                /> */}
               </Link>
             ))}
         </div>

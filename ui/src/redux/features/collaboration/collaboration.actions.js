@@ -5,12 +5,16 @@ import API from "../../api/api";
 // Async Thunk to create a new collaboration
 export const createCollaboration = createAsyncThunk(
   "collaboration/createCollaboration",
-  async (teamId, subteamId, collaborationData) => {
-    const response = await API.post(
-      `/team/subteams/collaborations/${teamId}/${subteamId}`,
-      collaborationData
-    );
-    return response.data;
+  async ({ teamId, subteamId, userId, content }, { rejectWithValue }) => {
+    try {
+      const response = await API.post(
+        `/team/subteams/collaborations/${teamId}/${subteamId}`,
+        { userId, content }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
   }
 );
 
@@ -21,6 +25,7 @@ export const getAllCollaborationsByTeamAndSubteam = createAsyncThunk(
     const response = await API.get(
       `/team/subteams/collaborations/${teamId}/${subteamId}`
     );
+
     return response.data;
   }
 );

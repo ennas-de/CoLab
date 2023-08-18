@@ -16,11 +16,9 @@ import SubteamMembers from "./components/Subteam/SubteamMembers";
 import UpdateSubteam from "./components/Subteam/UpdateSubteam";
 import AddMembersToSubteam from "./components/Subteam/AddMembersToSubteam";
 import SubteamDetail from "./components/Subteam/SubteamDetail";
-// import CollaborationList from "./pages/Dashboard/Collaboration/CollaborationListPage";
-// import CollaborationDetailPage from "./pages/Dashboard/Collaboration/CollaborationDetailPage";
-// import CollaborationEditorPage from "./pages/Dashboard/Collaboration/CollaborationListPage/index";
-// import CollaborationRoom from "./components/Collaboration/CollaborationRoom/";
-// import CollaborationListPage from "./pages/Dashboard/Collaboration/CollaborationListPage";
+import CollaborationListPage from "./pages/Dashboard/Collaboration/CollaborationListPage";
+import AddCollaborationForm from "./components/Collaboration/CreateNewCollaboration";
+import CollaborationRoom from "./components/Collaboration/CollaborationRoom";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -75,14 +73,18 @@ function App() {
         element={<AddMembersToSubteam />}
       />
       {/* Collaborations route */}
-      {/* <Route
-        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/"
+      <Route
+        path="/dashboard/teams/:teamId/subteams/:subteamId/collaborations/"
         element={<CollaborationListPage />}
       />
       <Route
-        path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/:collaborationId"
-        element={<CollaborationDetailPage />}
-      /> */}
+        path="/dashboard/teams/:teamId/subteams/:subteamId/collaborations/create"
+        element={<AddCollaborationForm />}
+      />
+      <Route
+        path="/dashboard/teams/:teamId/subteams/:subteamId/collaborations/:collaborationId"
+        element={<CollaborationRoom />}
+      />
       {/* <Route
         path="/dashboard/team/:teamId/subteam/:subteamId/collaborations/create"
         element={<CollaborationRoom />}

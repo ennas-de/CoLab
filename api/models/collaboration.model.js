@@ -19,9 +19,17 @@ const collaborationSchema = new mongoose.Schema({
       required: true,
     },
   ],
-  code: {
+  name: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    // required: true,
+  },
+  code: {
+    type: String,
+    // required: true,
   },
   timestamp: {
     type: Date,
