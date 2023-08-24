@@ -1,12 +1,14 @@
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 
-export const initSocket = async () => {
-  const options = {
-    "force new connection": true,
-    reconnectionAttempt: "Infinity",
-    timeout: 10000,
-    transports: ["websocket"],
-  };
+const socket = io("http://localhost:5000", {
+  withCredentials: true,
+  "force new connection": true,
+  reconnectionAttempt: "Infinity",
+  timeout: 10000,
+});
 
-  return io(import.meta.env.VITE_SOCKET_SERVER_URL, options);
-};
+// const socket = io("http://localhost:5000", {
+//   withCredentials: true,
+// });
+
+export default socket;

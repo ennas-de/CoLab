@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-// import { useSocket } from "../../../../contexts/SocketContext";
+import socket from "../../../../contexts/socket";
 import CollaborationList from "../../../../components/Collaboration/CollaborationList";
 import {
   createCollaboration,
   joinCollaborationRoom,
   leaveCollaborationRoom,
 } from "../../../../redux/features/collaboration/collaboration.actions";
+// Socket
+// import io from "socket.io-client";
+
+// const socket = io("http://localhost:5000", {
+//   withCredentials: true,
+// });
 
 const CollaborationListPage = () => {
   // const socket = useSocket(); // Use the useSocket hook to get the socket instance
@@ -18,33 +24,27 @@ const CollaborationListPage = () => {
     id: "64d8df589748b875777bfeac",
   };
 
-  // Additional functionalities for creating, joining, and leaving collaboration rooms
-  const handleCreateCollaboration = (
-    newCollaborationName,
-    teamId,
-    subteamId,
-    user
-  ) => {
-    // Create a new collaboration room
-    dispatch(
-      createCollaboration({
-        teamId,
-        subteamId,
-        userId: user.id,
-        name: newCollaborationName,
-        content: "", // Initialize the content with an empty string
-      })
-    )
-      .unwrap()
-      .then((data) => {
-        console.log("Collaboration created successfully.");
-        // Emit the new collaboration details to all clients using Socket.io
-        socket.emit("newRoom", { roomId: data._id, name: data.name });
-      })
-      .catch((error) => {
-        console.log("Failed to create collaboration:", error);
-      });
+  // Socket
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name && message) {
+      socket.emit("send-message", { name, message });
+      // setName('')
+      // setMessage('')
+    }
   };
+
+  // Socket end
 
   const handleJoinCollaborationRoom = (roomId, userId) => {
     // Join the current user to the collaboration room

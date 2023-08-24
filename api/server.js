@@ -4,8 +4,6 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const { Server } = require("socket.io");
-const http = require("http");
 require("dotenv").config();
 
 // import routes
@@ -13,11 +11,14 @@ const Routes = require("./routes/index.js");
 
 // Create Express app
 const app = express();
-// const server = http.createServer(app);
-
-// Setup socket
-const server = http.createServer(app);
-const io = new Server(server);
+const server = require("http").Server(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Middlewares
 app.use(express.json());
@@ -43,59 +44,17 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
 
-// Socket Implementation
-const userSocketMap = {};
-const getAllConnectedCLients = (roomId) => {
-  // Map
-  return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
-    (socketId) => {
-      return {
-        socketId,
-        username: userSocketMap[socketId],
-      };
-    }
-  );
-};
-
+// Socket.IO
 io.on("connection", (socket) => {
-  console.log("sockect connected", socket.id);
+  console.log(`Socket ${socket.id} connected`);
 
-  socket.on("join", ({ roomId, username }) => {
-    userSocketMap[socket.id] = username;
-    socket.join(roomId);
-
-    const clients = getAllConnectedCLients(roomId);
-    clients.forEach(({ socketId }) => {
-      io.to(socketId).emit("joined", {
-        clients,
-        username,
-        socketId: socket.id,
-      });
-    });
+  socket.on("send-message", (message) => {
+    io.emit("message", message);
   });
 
-  socket.on("code-change", ({ roomId, code }) => {
-    socket.in(roomId).emit("code-change", { code });
+  socket.on("disconnect", () => {
+    console.log(`Socket ${socket.id} disconnected`);
   });
-
-  socket.on("sync-code", ({ socketId, code }) => {
-    io.to(socketId).emit("code-change", { code });
-  });
-
-  socket.on("disconnecting", () => {
-    const rooms = [...socket.rooms];
-    rooms.forEach((roomId) => {
-      socket.in(roomId).emit("disconnected", {
-        socketId: socket.id,
-        username: userSocketMap[socket.id],
-      });
-    });
-
-    delete userSocketMap[socket.id];
-    socket.leave();
-  });
-
-  // socket implementation end
 });
 
 // Routes
@@ -110,7 +69,7 @@ app.use("*", (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const PORT = 5000;
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
